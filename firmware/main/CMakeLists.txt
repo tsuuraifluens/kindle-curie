@@ -1,0 +1,23 @@
+idf_component_register(
+    SRCS
+        "main.c"
+        "device_identity.c"
+        "hid_report.c"
+        "battery_service.c"
+        "diagnostics.c"
+        "ble_hid.c"
+        "button_input.c"
+        "haptic_driver.c"
+        "power_manager.c"
+        "serial_console.c"
+        "self_test.c"
+    INCLUDE_DIRS
+        "."
+    REQUIRES
+        bt
+        nvs_flash
+        driver
+        esp_timer
+        esp_adc
+        console
+)

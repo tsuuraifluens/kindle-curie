@@ -1,0 +1,33 @@
+Entity/Symbol,app.bin Offset,Flash Physical Offset,UFW File Offset,CPU Virtual Address,Length (Bytes),Description/Evidence
+Flash Header,N/A,0x000000,0x000400,N/A,32,JLFS Master Header (CRC: 0x51D8; Flash Size: 508KB)
+uboot.boot Entry,N/A,0x000020,0x000420,0x00000000,32,JLFS Directory Entry for uboot.boot (Data @ 0x00A0)
+uboot.boot Code,N/A,0x0000A0,0x0004A0,0x00000000,4831,First-stage Bootloader executable (Entry: 0x00000000)
+isd_config.ini,N/A,0x00137F,0x00177F,N/A,122,Hardware pin and clock configuration block
+app_dir_head Entry,N/A,0x002000,0x002400,0x01E00000,32,JLFS Directory Entry for App Area Header
+app.bin Entry,N/A,0x002020,0x002420,0x01E00020,32,JLFS Directory Entry for app.bin (Data @ 0x002120)
+cfg_tool.bin Entry,N/A,0x002040,0x002440,0x01E00040,32,JLFS Directory Entry for cfg_tool.bin (Data @ 0x0329C8)
+App Header Space,N/A,0x002000,0x002400,0x01E00000,288,Total 9 JLFS directory headers occupying exactly 0x120 bytes
+app.bin Entry Point,0x000000,0x002120,0x002520,0x01E00120,64,q32s C runtime startup (USP/SSP init; clear BSS; copy data)
+read PnP_ID Handler,0x004494,0x0065B4,0x0069B4,0x01E045B4,48,DIS 0x2A50 PnP ID retrieval and ATT response construction
+Multi-Mode Dispatcher,0x007120,0x009240,0x009640,0x01E07240,160,Slide switch and combo key mode arbitration function
+Companion App Parser,0x008CFE,0x00AE1E,0x00B21E,0x01E08E1E,256,IINE Companion App text command parser (cmd: %s)
+Touch Emulation Engine,0x008D1E,0x00AE3E,0x00B23E,0x01E08E3E,128,Multi-touch coordinate interpolation (ios_x; andr_x)
+remap_key Handler,0x00E7AC,0x0108CC,0x010CCC,0x01E0E8CC,32,remap_key.consumer_key volume key dispatch logic
+Mode String: IINE_reader,0x0211C6,0x0232E6,0x0236E6,0x01E212E6,12,Bluetooth ADV Name in Reader Mode (Patch Target 1)
+Mode String: Xbox Controller,0x0211D2,0x0232F2,0x0236F2,0x01E212F2,25,Bluetooth ADV Name in Gamepad Mode
+Mode String: IINE_keyboard,0x0211EB,0x02330B,0x02370B,0x01E2130B,14,Bluetooth ADV Name in Keyboard Mode
+Mode String: IINE_mouse,0x0211F9,0x023319,0x023719,0x01E21319,11,Bluetooth ADV Name in Mouse Mode
+Mode String: IINE_phone,0x021204,0x023324,0x023724,0x01E21324,11,Bluetooth ADV Name in Touch/Phone Mode
+Mode String: IINE_control,0x02120F,0x02332F,0x02372F,0x01E2132F,13,Bluetooth ADV Name in DirectInput Mode
+GATT Database Base,0x022050,0x024170,0x024570,0x01E22170,768,Complete BLE ATT Profile table (Handles 0x0001 - 0x0085)
+DIS Manufacturer String,0x022384,0x0244A4,0x0248A4,0x01E224A4,13,GATT 0x2A29 Manufacturer Name (Patch Target 2)
+DIS PnP ID Data,0x0223BC,0x0244DC,0x0248DC,0x01E224DC,10,GATT 0x2A50 PnP ID 7-byte structure (Patch Target 3 & 4)
+HID Gamepad Descriptor,0x02248C,0x0245AC,0x0249AC,0x01E225AC,380,HID Report Map for Gamepad (Report ID 1)
+HID Keyboard Descriptor,0x022608,0x024728,0x024B28,0x01E22728,64,HID Report Map for Boot Keyboard (Report ID 2)
+HID Mouse Descriptor,0x022648,0x024768,0x024B68,0x01E22768,68,HID Report Map for Mouse (Report ID 4)
+HID Touch Digitizer Desc,0x0226A6,0x0247C6,0x024BC6,0x01E227C6,192,HID Report Map for Multi-touch Digitizer (Report ID 6)
+HID Reader Consumer Desc,0x02280C,0x02492C,0x024D2C,0x01E2292C,58,HID Report Map for IINE_reader (Report ID 1 Consumer)
+cfg_tool.bin Data,0x0308A8,0x0329C8,0x032DC8,0x01E309C8,722,Configuration Tool slot parameters (AC632N_1..20)
+p11_code.bin Entry,N/A,0x032C9A,0x03309A,0x01E32DBA,32,JLFS Directory Entry for P11 Coprocessor Firmware
+p11_code.bin Data,N/A,0x032CBA,0x0330BA,0x00000000,4096,P11 Low-Power Sleep/Wake Coprocessor code
+Flash End of App,0x0308A8,0x034000,0x034400,0x01E34120,N/A,End of Entry 0 (flash.bin) in UFW container

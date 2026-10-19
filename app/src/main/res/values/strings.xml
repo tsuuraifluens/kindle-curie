@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Kindle 翻页器模拟器</string>
+    <string name="title_main">Kindle Remote (Paperwhite 2024)</string>
+    <string name="title_settings">协议与模拟设置</string>
+    <string name="title_diagnostics">通信与协议诊断日志</string>
+    <string name="title_root_management">Root 与系统文件安全管理</string>
+
+    <!-- Status labels -->
+    <string name="label_bluetooth">蓝牙状态：</string>
+    <string name="label_ble_peripheral">外设广播能力：</string>
+    <string name="label_permissions">系统权限：</string>
+    <string name="label_adv_state">广播状态：</string>
+    <string name="label_conn_state">连接状态：</string>
+    <string name="label_identity_sim">设备身份：</string>
+    <string name="label_mode">工作模式：</string>
+    <string name="label_last_result">协议执行结果：</string>
+
+    <!-- Buttons -->
+    <string name="btn_start_emulation">启动模拟</string>
+    <string name="btn_stop_emulation">停止模拟</string>
+    <string name="btn_disconnect">断开连接</string>
+    <string name="btn_page_forward">下一页 (Page Down)</string>
+    <string name="btn_page_backward">上一页 (Page Up)</string>
+    <string name="btn_resume_adv">恢复广播</string>
+    <string name="btn_settings">设置</string>
+    <string name="btn_diagnostics">诊断日志</string>
+    <string name="btn_root_manager">Root 文件管理</string>
+    <string name="btn_export_logs">导出日志</string>
+    <string name="btn_clear_logs">清空日志</string>
+    <string name="mode_ble">普通模式 (BLE HOGP)</string>
+    <string name="mode_classic">高级模式 (Classic HID / Root)</string>
+</resources>

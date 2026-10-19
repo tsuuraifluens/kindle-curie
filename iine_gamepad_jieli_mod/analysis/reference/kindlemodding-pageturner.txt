@@ -1,0 +1,92 @@
+KindleModding - Kindle Click        Kindle Modding Wiki         Find my Jailbreak    Jailbreaking Your Kindle    Prevent Automatic Updates  Véra  SpiderCat  SpringBreak  AdBreak  Nosebleed  Sanctuary  WinterBreak  WinterBreak2    Legacy    LanguageBreak  NiLuJe K2/DX/DXG/K3 Jailbreak  NiLuJe K4 Jailbreak  NiLuJe K5 Jailbreak  WatchThis    Popcorn    KT2  KT3  KV  PW2  PW3    KindleBreak    Backing Up    Backing Up Your Kindle  Restoring Your Kindle      Post Jailbreak    Setting Up A Hotfix  Installing KUAL & MRPI  Disabling OTA Updates        What's Next?    Installing Homebrew  Getting KOReader    Kindle Jailbreak FAQ  Recovering From a Reset  Bypassing OOBE      Firmware and Flashing    Manually Downloading Firmware Update Files  Downgrading Your Kindle  Forcing KV to run 5.14+      Kindle Development      KPM    Creating a Package  Creating a Repository    Scriptlets    GTK Tutorial    Prerequisites  Setting Up The Project  Kindle Considerations    Kindle SDK  Awesome Window Manager      WAFs & Mesquite    Understanding config.xml    The Kindle Object    kindle.chrome  kindle.dconfig  kindle.dev  kindle.device  kindle.gestures  kindle.messaging  kindle.net  kindle.todo  Enums        Kindle Hacking    Models Table  Appreg.db  Debug Commands  Hotfix  Kindle Click  Prototype Kindles  Usermode Boot Process      Kindle Apps & Services    com.amazon.kindle.inputMethod  com.lab126.adManager  com.lab126.adRotationManager  com.lab126.appmgrd  com.lab126.archive  com.lab126.blanket  com.lab126.btfd  com.lab126.btService  com.lab126.ccat  com.lab126.chromebar  com.lab126.cmd  com.lab126.contentpackd  com.lab126.coverArtService  com.lab126.cvm  com.lab126.demd  com.lab126.DeviceAuthenticationService  com.lab126.deviced  com.lab126.devicemetrics  com.lab126.dpm.apps  com.lab126.dpmManager  com.lab126.extractor.java  com.lab126.fastMetrics  com.lab126.freetime  com.lab126.grokservice  com.lab126.household  com.lab126.IdentityService  com.lab126.indexer  com.lab126.instantSearch  com.lab126.kaf  com.lab126.keyboard  com.lab126.KindleIdentity  com.lab126.kindleStatusService  com.lab126.KIWIBridge  com.lab126.legalComplianceService  com.lab126.linux.arm.connectionutilities  com.lab126.pillow  com.lab126.pmond  com.lab126.powerd  com.lab126.quickactions  com.lab126.reader.readingtimer  com.lab126.readingstreams  com.lab126.readnow  com.lab126.refreshCache    com.lab126.scanner    Extractors    com.lab126.sharing  com.lab126.stored  com.lab126.system  com.lab126.todo  com.lab126.todo.kaf  com.lab126.transfer  com.lab126.volumd  com.lab126.winmgr     Settings   Light Mode  Dark Mode        Kindle Click     Kindle Click is a page turning remote announced on 1st October 2026 for $35.  Features:   Forward  Backward  Brightness increase/decrease  Sleep   The device is internally referred to as  kindleremote .  HID  The Kindle Click is a HOGP (HID over GATT Profile) device. Battery life is reported via a standard BLE battery service ( 0x180F ).  (needs confirming)   Discovery  The Kindle detects the Kindle remote as a HID device with a vendor ID of  0x0171  and a product ID of  0x0443 .  Control  The Kindle Click sends standard HID keycodes for each action:      Action  Key      Page Forward  KEY_PAGEDOWN    Page Back  KEY_PAGEUP    Brightness Up  KEY_BRIGHTNESSUP    Brightness Down  KEY_BRIGHTNESSDOWN    Sleep  KEY_POWER      OS Implementation  The device is handled by  /usr/bin/acsbtfd  which performs the main pairing, discovery, and HID logic.  /usr/bin/input_manager  handles mapping the inputs (and the vid/pid storage?) and is data-driven, hence the JSON files attached to this page.  References  Thanks to  Clint  for confirming these findings with his own RE efforts.   /etc/input_manager/devices.json       {
+&#34;devices&#34; : [
+{
+&#34;name&#34; :  &#34;Amazon Kindle Remote&#34; ,
+&#34;vid&#34; :  &#34;0x0171&#34; ,
+&#34;pid&#34; :  &#34;0x0443&#34; ,
+&#34;category&#34; :  &#34;page_turner&#34; ,
+&#34;match_type&#34; :  &#34;vid_pid&#34;
+}
+]
+}
+/etc/input_manager/categories.json       {
+&#34;categories&#34; : {
+&#34;page_turner&#34; : {
+&#34;virtual_device&#34; : {
+&#34;name&#34; :  &#34;kindle-input-pt&#34; ,
+&#34;vendor_id&#34; :  &#34;0x0001&#34; ,
+&#34;product_id&#34; :  &#34;0x0001&#34;
+},
+&#34;pipeline_stages&#34; : [ &#34;capability_filter&#34; ,  &#34;orientation_swap&#34; ,  &#34;debounce&#34; ,  &#34;rate_limiter&#34; ],
+&#34;trigger_detection&#34; :  false ,
+&#34;debounce_window_ms&#34; :  50 ,
+&#34;rate_limit_events_per_sec&#34; :  100 ,
+&#34;rate_limit_burst_size&#34; :  10 ,
+&#34;capability_table&#34; : [
+&#34;KEY_PAGEDOWN&#34; ,
+&#34;KEY_PAGEUP&#34; ,
+&#34;KEY_BRIGHTNESSUP&#34; ,
+&#34;KEY_BRIGHTNESSDOWN&#34; ,
+&#34;KEY_POWER&#34;
+],
+&#34;semantic_names&#34; : {
+&#34;nav.page_forward&#34; :  &#34;KEY_PAGEDOWN&#34; ,
+&#34;nav.page_back&#34; :  &#34;KEY_PAGEUP&#34; ,
+&#34;display.brightness_up&#34; :  &#34;KEY_BRIGHTNESSUP&#34; ,
+&#34;display.brightness_down&#34; :  &#34;KEY_BRIGHTNESSDOWN&#34; ,
+&#34;system.sleep&#34; :  &#34;KEY_POWER&#34;
+},
+&#34;default_mappings&#34; : [
+{
+&#34;event&#34; :  &#34;KEY_PAGEDOWN&#34; ,
+&#34;trigger&#34; :  &#34;press&#34; ,
+&#34;target_type&#34; :  &#34;emit&#34; ,
+&#34;target&#34; :  &#34;KEY_PAGEDOWN&#34;
+},
+{
+&#34;event&#34; :  &#34;KEY_PAGEUP&#34; ,
+&#34;trigger&#34; :  &#34;press&#34; ,
+&#34;target_type&#34; :  &#34;emit&#34; ,
+&#34;target&#34; :  &#34;KEY_PAGEUP&#34;
+},
+{
+&#34;event&#34; :  &#34;KEY_BRIGHTNESSUP&#34; ,
+&#34;trigger&#34; :  &#34;press&#34; ,
+&#34;target_type&#34; :  &#34;action&#34; ,
+&#34;target&#34; :  &#34;display.brightness_up&#34; ,
+&#34;dispatch_on&#34; : [ &#34;press&#34; ,  &#34;repeat&#34; ]
+},
+{
+&#34;event&#34; :  &#34;KEY_BRIGHTNESSDOWN&#34; ,
+&#34;trigger&#34; :  &#34;press&#34; ,
+&#34;target_type&#34; :  &#34;action&#34; ,
+&#34;target&#34; :  &#34;display.brightness_down&#34; ,
+&#34;dispatch_on&#34; : [ &#34;press&#34; ,  &#34;repeat&#34; ]
+},
+{
+&#34;event&#34; :  &#34;KEY_POWER&#34; ,
+&#34;trigger&#34; :  &#34;press&#34; ,
+&#34;target_type&#34; :  &#34;action&#34; ,
+&#34;target&#34; :  &#34;system.sleep&#34; ,
+&#34;dispatch_on&#34; : [ &#34;press&#34; ]
+}
+],
+&#34;kernel_repeat&#34; : {
+&#34;delay_ms&#34; :  500 ,
+&#34;period_ms&#34; :  333
+},
+&#34;orientation_swap_pairs&#34; : [
+{
+&#34;event1&#34; :  &#34;nav.page_forward&#34; ,
+&#34;event2&#34; :  &#34;nav.page_back&#34; ,
+&#34;swap_on&#34; : [ 180 ]
+}
+],
+&#34;storage_backend&#34; :  &#34;gkeyfile&#34; ,
+&#34;max_devices&#34; :  16 ,
+&#34;max_overrides&#34; :  8 ,
+&#34;max_action_queue_depth&#34; :  32
+}
+}
+}
+GitHub  Donate!

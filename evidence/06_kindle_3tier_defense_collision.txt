@@ -1,0 +1,28 @@
+================================================================================
+EVIDENCE 06: Kindle 3-Tier Defensive Filter vs IINE Firmware Collision Matrix
+Target OS: Kindle Paperwhite 2024 / Sangria 5.20.1 (Bellatrix 4)
+================================================================================
+
+TIER 1: BLE Discovery Filter (acsbtfd -> BtDiscoveryFilter::Classify)
+--------------------------------------------------------------------------------
+Kindle Rule:        Requires Manufacturer Data: 0x05, 0xFF, 0x71, 0x01, 0x04, 0x43 in ADV packet.
+IINE Factory FW:    Missing Manufacturer Data (emits generic GAP ADV 0x02, 0x01, 0x06).
+Verdict:            BLOCKED. Device is invisible in Kindle Bluetooth scanning menu.
+
+TIER 2: Device Classifier Allowlist (input_manager -> /etc/input_manager/devices.json)
+--------------------------------------------------------------------------------
+Kindle Rule:        GATT DIS PnP ID (0x2A50) must match VID 0x0171, PID 0x0443.
+IINE Factory FW:    Reports VID 0x053B, PID 0x1007.
+Verdict:            BLOCKED. Rejected by DeviceClassifier with "device not in allowlist".
+
+TIER 3: Input Pipeline Filtering (input_manager -> capability_filter)
+--------------------------------------------------------------------------------
+Kindle Rule:        Accepts ONLY Keyboard PageUp (0x4B) and PageDown (0x4E). Drops Volume keys.
+IINE Factory FW:    In IINE_reader mode, emits Consumer Control VolumeUp (0xE9) / VolumeDown (0xEA).
+Verdict:            BLOCKED. Zero page turns even if paired manually via SSH/developer mode.
+
+MODIFIED CANDIDATE FIRMWARE STATUS:
+--------------------------------------------------------------------------------
+- PnP ID: Patched to 0x0171:0x0443 (Solves Tier 2)
+- ADV Manufacturer Data: Injected into beacon generator (Solves Tier 1)
+- Key Routing: Routed to Keyboard Report PageDown/PageUp (Solves Tier 3)

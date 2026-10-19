@@ -1,0 +1,83 @@
+================================================================================
+EVIDENCE 02: HID Report Descriptors Complete Extraction and Annotated Map
+Target Binary: app.bin
+================================================================================
+
+[1] Mode: IINE_reader (Offset 0x2280C - 0x22845, Length 58 bytes):
+    Hex Dump:
+    05 0C 09 01 A1 01 85 01 09 30 09 40 09 82 09 A0 09 B5 09 B6 09 E9 09 EA 09 E2 09 CD 0A 83 01 0A 96 01 0A 23 02 0A 24 02 0A 2D 02 0A 2E 02 19 00 29 01 15 00 25 01 75 01 95 10
+
+    Annotated Structure:
+    05 0C        Usage Page (Consumer Devices)
+    09 01        Usage (Consumer Control)
+    A1 01        Collection (Application)
+    85 01        Report ID (1)
+    09 30        Usage (Power)
+    09 40        Usage (Menu)
+    09 82        Usage (Sleep)
+    09 A0        Usage (Media Select CD)
+    09 B5        Usage (Scan Next Track)
+    09 B6        Usage (Scan Previous Track)
+    09 E9        Usage (Volume Increment / Up)
+    09 EA        Usage (Volume Decrement / Down)
+    09 E2        Usage (Mute)
+    09 CD        Usage (Play/Pause)
+    0A 83 01     Usage (AL Consumer Control Configuration)
+    0A 96 01     Usage (AL Internet Browser)
+    0A 23 02     Usage (AC Home)
+    0A 24 02     Usage (AC Back)
+    0A 2D 02     Usage (AC Zoom In)
+    0A 2E 02     Usage (AC Zoom Out)
+    19 00        Usage Minimum (0)
+    29 01        Usage Maximum (1)
+    15 00        Logical Minimum (0)
+    25 01        Logical Maximum (1)
+    75 01        Report Size (1 bit)
+    95 10        Report Count (16 items = 2 bytes bitfield)
+    81 02        Input (Data, Variable, Absolute)
+    C0           End Collection
+
+    FATAL ROOT CAUSE FOR KINDLE INCOMPATIBILITY:
+    IINE_reader uses Usage Page 0x0C (Consumer Control) and emits Volume Up (bit 6) and Volume Down (bit 7).
+    Kindle OS input_manager capability_filter strictly drops all Volume keys.
+    Kindle REQUIRES standard Keyboard Report (Usage Page 0x07) with KEY_PAGEUP (0x4B) and KEY_PAGEDOWN (0x4E).
+
+[2] Standard Keyboard Descriptor (Offset 0x22608 - 0x22645, Length 62 bytes):
+    Hex Dump:
+    C0 C0 05 01 09 06 A1 01 85 02 05 07 19 E0 29 E7 15 00 25 01 75 01 95 08 81 02 95 01 75 08 81 01 95 06 75 08 15 00 26 FF 00 05 07 19 00 2A FF 00 81 00 95 03 75 01 05 08 25 01 19 01 29 03
+
+    Annotated Structure:
+    05 01        Usage Page (Generic Desktop)
+    09 06        Usage (Keyboard)
+    A1 01        Collection (Application)
+    85 02        Report ID (2)
+    05 07        Usage Page (Key Codes)
+    19 E0        Usage Minimum (224 / Left Control)
+    29 E7        Usage Maximum (231 / Right GUI)
+    15 00        Logical Minimum (0)
+    25 01        Logical Maximum (1)
+    75 01        Report Size (1)
+    95 08        Report Count (8 -> Modifier byte)
+    81 02        Input (Data, Variable, Absolute)
+    95 01        Report Count (1)
+    75 08        Report Size (8 -> Reserved byte)
+    81 01        Input (Constant)
+    95 06        Report Count (6)
+    75 08        Report Size (8)
+    15 00        Logical Minimum (0)
+    26 FF 00     Logical Maximum (255)
+    05 07        Usage Page (Key Codes)
+    19 00        Usage Minimum (0)
+    2A FF 00     Usage Maximum (255)
+    81 00        Input (Data, Array)
+    95 03        Report Count (3)
+    75 01        Report Size (1)
+    05 08        Usage Page (LEDs)
+    25 01        Logical Maximum (1)
+    19 01        Usage Minimum (Num Lock)
+    29 03        Usage Maximum (Scroll Lock)
+    91 02        Output (Data, Variable, Absolute)
+    95 05        Report Count (5)
+    75 01        Report Size (1)
+    91 01        Output (Constant)
+    C0           End Collection

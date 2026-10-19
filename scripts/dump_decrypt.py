@@ -1,0 +1,16 @@
+import sys
+sys.path.insert(0, 'scripts')
+from re_meta import data, off_to_va, va_to_off
+import struct
+
+start_va = 0x00441B10
+end_va = 0x00441E00
+start_off = va_to_off(start_va)
+end_off = va_to_off(end_va)
+code = data[start_off:end_off]
+
+print(f"Code for JL_PACKAGE_FORMAT_COMMON::decrypt (VA 0x{start_va:08X}..0x{end_va:08X}):")
+for i in range(0, len(code), 16):
+    va = start_va + i
+    chunk = code[i:i+16]
+    print(f"0x{va:08X}: {' '.join(f'{b:02x}' for b in chunk)}")

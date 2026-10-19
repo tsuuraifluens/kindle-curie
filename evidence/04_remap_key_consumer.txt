@@ -1,0 +1,16 @@
+================================================================================
+EVIDENCE 04: Consumer Key Remapping Handler at Offset 0xE7AC
+================================================================================
+
+[1] Code Context (Offset 0xE796 - 0xE7BC):
+    0xE796: F580 00E8    mov r0, 0x00E8 ; Base volume key
+    0xE79A: D201         add r2, r0, r1
+    0xE7AC: F582 00EA    mov r2, 0x00EA ; Volume Down keycode
+    0xE7B0: F581 00E8    mov r1, 0x00E9 ; Volume Up keycode
+    0xE7B4: mov r0, 0x01E2142D ; "remap_key.consumer_key :%x %x\n"
+    0xE7BA: call printf
+
+[2] Key Dispatch Nuance:
+    Changing 0x00EA/0x00E9 to 0x004E/0x004B inside remap_key.consumer_key alters the value,
+    BUT the handler feeds the report buffer into hid_send_report(HID_TYPE_CONSUMER, ...),
+    which Kindle ignores. To achieve Kindle page-turn, the event must be emitted as HID_TYPE_KB.

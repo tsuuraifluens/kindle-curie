@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 440" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg-en" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+    <linearGradient id="body-en" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#334155" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+    <linearGradient id="btn-blue-en" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+    <linearGradient id="btn-green-en" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#34d399" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+    <linearGradient id="dpad-en" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#475569" />
+      <stop offset="100%" stop-color="#334155" />
+    </linearGradient>
+    <filter id="shadow-en" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="920" height="440" rx="16" fill="url(#bg-en)" stroke="#334155" stroke-width="1.5"/>
+
+  <!-- Title Badge -->
+  <g transform="translate(40, 25)">
+    <rect width="380" height="32" rx="16" fill="#0284c7" fill-opacity="0.2" stroke="#38bdf8" stroke-width="1"/>
+    <text x="190" y="21" fill="#38bdf8" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="bold" text-anchor="middle">IINE Mini Gamepad (L1161 / L1162) Kindle Keymap</text>
+  </g>
+
+  <!-- Gamepad Graphic Container -->
+  <g transform="translate(190, 85)" filter="url(#shadow-en)">
+    <!-- Gamepad Outer Body -->
+    <rect x="0" y="0" width="540" height="270" rx="70" fill="url(#body-en)" stroke="#64748b" stroke-width="2.5"/>
+    <rect x="6" y="6" width="528" height="258" rx="64" fill="none" stroke="#475569" stroke-width="1" stroke-dasharray="4 2"/>
+
+    <!-- Lanyard Hole (Left) -->
+    <rect x="-8" y="30" width="12" height="24" rx="4" fill="#0f172a" stroke="#475569" stroke-width="1.5"/>
+    <circle cx="-2" cy="42" r="4" fill="#1e293b"/>
+
+    <!-- USB-C Port (Top Center) -->
+    <rect x="235" y="-6" width="70" height="12" rx="5" fill="#0f172a" stroke="#64748b" stroke-width="1.5"/>
+    <rect x="245" y="-2" width="50" height="4" rx="2" fill="#38bdf8" fill-opacity="0.6"/>
+
+    <!-- Pair Button (Center Top) -->
+    <g transform="translate(245, 30)">
+      <rect width="50" height="24" rx="12" fill="#0f172a" stroke="#f59e0b" stroke-width="1.5"/>
+      <text x="25" y="16" fill="#fbbf24" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="bold" text-anchor="middle">Pair</text>
+    </g>
+
+    <!-- D-Pad (Left) -->
+    <g transform="translate(120, 135)">
+      <!-- Cross Shape Background -->
+      <path d="M -22 -65 L 22 -65 L 22 -22 L 65 -22 L 65 22 L 22 22 L 22 65 L -22 65 L -22 22 L -65 22 L -65 -22 L -22 -22 Z" fill="url(#dpad-en)" stroke="#64748b" stroke-width="2"/>
+      <circle cx="0" cy="0" r="16" fill="#1e293b"/>
+      
+      <!-- Up Arrow -->
+      <polygon points="0,-52 -10,-38 10,-38" fill="#38bdf8"/>
+      <text x="0" y="-25" fill="#e2e8f0" font-family="system-ui, sans-serif" font-size="9" text-anchor="middle">Next</text>
+      
+      <!-- Down Arrow -->
+      <polygon points="0,52 -10,38 10,38" fill="#38bdf8"/>
+      <text x="0" y="32" fill="#e2e8f0" font-family="system-ui, sans-serif" font-size="9" text-anchor="middle">Prev</text>
+
+      <!-- Left Arrow -->
+      <polygon points="-52,0 -38,-10 -38,10" fill="#fbbf24"/>
+      <text x="-25" y="4" fill="#fbbf24" font-family="system-ui, sans-serif" font-size="9" text-anchor="middle">Dim</text>
+
+      <!-- Right Arrow -->
+      <polygon points="52,0 38,-10 38,10" fill="#fbbf24"/>
+      <text x="25" y="4" fill="#fbbf24" font-family="system-ui, sans-serif" font-size="9" text-anchor="middle">Bright</text>
+    </g>
+
+    <!-- Center LED Indicators -->
+    <g transform="translate(255, 140)">
+      <circle cx="0" cy="0" r="4" fill="#34d399"/>
+      <circle cx="15" cy="0" r="4" fill="#334155"/>
+      <circle cx="30" cy="0" r="4" fill="#334155"/>
+    </g>
+
+    <!-- Right Action Buttons (A & B) -->
+    <!-- Button A (Top Right) -->
+    <g transform="translate(420, 105)">
+      <circle cx="0" cy="0" r="28" fill="url(#btn-blue-en)" stroke="#38bdf8" stroke-width="2"/>
+      <text x="0" y="8" fill="#ffffff" font-family="system-ui, sans-serif" font-size="20" font-weight="bold" text-anchor="middle">A</text>
+    </g>
+
+    <!-- Button B (Bottom Right) -->
+    <g transform="translate(420, 185)">
+      <circle cx="0" cy="0" r="28" fill="url(#btn-green-en)" stroke="#34d399" stroke-width="2"/>
+      <text x="0" y="8" fill="#ffffff" font-family="system-ui, sans-serif" font-size="20" font-weight="bold" text-anchor="middle">B</text>
+    </g>
+  </g>
+
+  <!-- Left Callout Card (D-Pad Function) -->
+  <g transform="translate(30, 200)">
+    <rect width="180" height="95" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+    <text x="15" y="24" fill="#38bdf8" font-family="system-ui, sans-serif" font-size="12" font-weight="bold">D-Pad Navigation</text>
+    <text x="15" y="46" fill="#cbd5e1" font-family="system-ui, sans-serif" font-size="11">▲ / ▼ : Next / Prev Page</text>
+    <text x="15" y="68" fill="#fbbf24" font-family="system-ui, sans-serif" font-size="11">◀ / ▶ : Brightness Down/Up</text>
+    <text x="15" y="86" fill="#64748b" font-family="system-ui, sans-serif" font-size="10">Usage 0x0070 / 0x006F</text>
+  </g>
+
+  <!-- Right Callout Card (A & B Buttons) -->
+  <g transform="translate(710, 160)">
+    <rect width="180" height="135" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+    <text x="15" y="24" fill="#34d399" font-family="system-ui, sans-serif" font-size="12" font-weight="bold">Primary Action Keys</text>
+    <text x="15" y="48" fill="#38bdf8" font-family="system-ui, sans-serif" font-size="12" font-weight="bold">Key A: Previous Page</text>
+    <text x="15" y="66" fill="#64748b" font-family="system-ui, sans-serif" font-size="10">PageUp (0x4B)</text>
+    <text x="15" y="90" fill="#34d399" font-family="system-ui, sans-serif" font-size="12" font-weight="bold">Key B: Next Page</text>
+    <text x="15" y="108" fill="#64748b" font-family="system-ui, sans-serif" font-size="10">PageDown (0x4E)</text>
+    <text x="15" y="126" fill="#e2e8f0" font-family="system-ui, sans-serif" font-size="10">★ Optimized for single hand</text>
+  </g>
+
+  <!-- Bottom Chord Banner -->
+  <g transform="translate(210, 385)">
+    <rect width="500" height="38" rx="8" fill="#0f172a" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="250" y="24" fill="#fbbf24" font-family="system-ui, sans-serif" font-size="12" font-weight="bold" text-anchor="middle">💡 Chords: Hold [Pair + B] for DFU Flash  |  Press [A + B] for Sleep (v23)</text>
+  </g>
+</svg>

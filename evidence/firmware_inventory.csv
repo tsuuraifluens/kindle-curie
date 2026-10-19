@@ -1,0 +1,20 @@
+FilePath,FileType,SizeBytes,SHA256,ArchOrFormat,AnalyzedStatus,FunctionalRole
+"update_kindle_all_new_paperwhite_12th_5.20.1 (1).bin",FirmwarePackage,411848917,2720E427A5D2EA55FB534F85BF2B3A27CEC6EE8DA6895E81ACDD1D00EF1D313C,AmazonOTAUpdate,Unpacked,Raw official OTA update container
+"rootfs.img",FilesystemImage,805306368,17638e0a6903294f33478e50f47173704cb04a7b7d238c065f414a733d857d89,LinuxExt3,Mounted,Uncompressed system rootfs partition
+"/etc/prettyversion.txt",ConfigFile,30,81be92d4f55f69c0993547e17cb75d1656885df4b6b6ecba9443d00127e997a3,Text,Analyzed,Kindle 5.20.1 OS version declaration
+"/etc/version.txt",ConfigFile,127,11a3d9df4aee9fc49692461ec468eecebaec9e6022e37e96fc8ae888a786e2d1,Text,Analyzed,System build 050-juno_2001_sangria_bellatrix4-489390
+"/etc/input_manager/devices.json",ConfigFile,182,2806f3b43d21e0929637f05f13ac10088ddcc21d7caac846974e2834d1a4ffef,JSON,Analyzed,Device allowlist matching Amazon Kindle Remote (0x0171:0x0443)
+"/etc/input_manager/categories.json",ConfigFile,2184,96208b5c48b4fc1b525e1844253b4794f8fde612c33f5603494ee6ba06e90886,JSON,Analyzed,Category pipeline configuration for page_turner & kindle-input-pt
+"/etc/udev/rules.d/99-kindle-input.rules",UdevRules,121,5b939fbf695be3620fdb48e359a68da5e1c45582f3ef80880197d195c65f9dc7,Text,Analyzed,Udev rules tagging kindle-input-pt as core keyboard
+"/etc/upstart/makexconfig",UpstartScript,11942,6c72b22080a2b5e28a506161aa55495c6ff641774e1d7463f8d95eb07f0bb150,ShellScript,Analyzed,Dynamic Xorg configuration generator registering kindle-input-pt
+"/etc/upstart/acsbtfd.conf",UpstartService,595,d39aa113b53f6c77bb3fc5b525d8cbb819d20c542c3008639e71ecae88bb5d7c,UpstartConfig,Analyzed,Service launcher for acsbtfd under bluetooth user
+"/etc/upstart/btmanagerd.conf",UpstartService,1614,c1c010b9a3854193eb7e5c9a4ae4f3a53be8a3a0e1069df9c40aa2078652bf33,UpstartConfig,Analyzed,Service launcher for btmanagerd with NICE -10
+"/usr/bin/input_manager",NativeBinary,183256,76ce11b0c41f4685090f600dd44f842708b83867df6d41b675538e03840e6eab,ELF32-ARM-Thumb2,ReverseEngineered,Core input pipeline and whitelist filter daemon
+"/usr/bin/acsbtfd",NativeBinary,265568,37f9295a2eaaafd97193c1a2c690cfbfa22b7cef9a585cae0a18179fc3ea0fb7,ELF32-ARM-Thumb2,ReverseEngineered,Bluetooth feature daemon & BleHidPageTurnerPolicy manager
+"/usr/bin/btmanagerd",NativeBinary,84100,28c31cb1881882b53b89098730f7b0f61205691060933c0daeb30740a6b5790a,ELF32-ARM-Thumb2,Analyzed,Amazon ACE BT server daemon
+"/usr/lib/libace_bt.so.1.0",SharedLibrary,133040,337b86ddbff6f59dee04e82aa34b6cde6703ea9c11f73aa0ef3b2dd9e7295dcc,ELF32-ARM,ReverseEngineered,ACE BT client library implementing HIDHost and GATT APIs
+"/usr/lib/libace_bt_manager_core.so.1.0",SharedLibrary,452372,7df5a435a0a8be187337ce8cb0a4110c7ef4a278bd4ee35f926477a108795d71,ELF32-ARM,Analyzed,ACE BT middleware core integrating Fluoride/BlueDroid
+"/app/lib/libAccessories.so",SharedLibrary,303780,a6687597a275e1f5f14deaa23334874b10e106d309b0a84abb7f4ab12e44a0c3,ELF32-ARM-Thumb2,ReverseEngineered,Accessories coordinator handling BleAccessoryProvider & Pogo
+"/app/lib/libBluetoothSetup.so",SharedLibrary,374624,f66efcbd6a165f8212ed35330d9b41c56857c25843ca92c2c57206b35aae263f,ELF32-ARM-Thumb2,ReverseEngineered,Bluetooth settings provider and device pairing management
+"/app/KPPMainApp/js/KPPMainApp.js.hbc",HermesBytecode,6409832,e6da37f29402685712530c333036a1005ca656f706214df9ebff6bfa9fca44a7,HermesBytecode-v90,Analyzed,Kindle main UI React Native application bytecode
+"/app/KPPPillow-2.0/js/KPPPillow.js.hbc",HermesBytecode,1294872,3ba934f0f08910d65b7501a3cf837ceee6177b7f14b29bb869ea76db2e1b1d1f,HermesBytecode-v90,Analyzed,Kindle Pillow system alert & dialog React Native bytecode

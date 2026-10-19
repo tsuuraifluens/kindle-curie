@@ -1,0 +1,26 @@
+================================================================================
+EVIDENCE 03: Multi-Mode Selection and Dispatch Logic (0x7090 - 0x7220)
+================================================================================
+
+[1] Mode Strings in Flash:
+    - 0x211C6: "IINE_reader" (Virtual 0x01E212E6)
+    - 0x211D2: "Xbox Wireless Controller" (Virtual 0x01E212F2)
+    - 0x211EB: "IINE_keyboard" (Virtual 0x01E2130B)
+    - 0x211F9: "IINE_mouse" (Virtual 0x01E21319)
+    - 0x21204: "IINE_phone" (Virtual 0x01E21324)
+    - 0x2120F: "IINE_control" (Virtual 0x01E2132F)
+
+[2] Switch Dispatch Function (Virtual 0x01E071B0 - 0x01E07340):
+    0x7128: ldr r5, =0x01E21319 ; "IINE_mouse"
+    0x7130: ldr r6, =0x01E212E6 ; "IINE_reader"
+    0x7186: ldr r5, =0x01E2132F ; "IINE_control"
+    0x718E: ldr r5, =0x01E212F7 ; "Xbox Wireless Controller"
+    0x7196: ldr r5, =0x01E2130B ; "IINE_keyboard"
+    0x719E: ldr r5, =0x01E21324 ; "IINE_phone"
+
+[3] Hardware Mode Toggle Mechanism:
+    The gamepad polls hardware buttons upon power-up (held during slide switch):
+    - Home + X: Switch Mode
+    - Home + Y: Keyboard Mode
+    - Home + B: Reader Mode (IINE_reader)
+    - Home + A: Android Gamepad Mode

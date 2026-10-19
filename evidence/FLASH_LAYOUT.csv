@@ -1,0 +1,16 @@
+Partition_Name,Flash_Start,Flash_End,Size_Bytes,Size_Formatted,SDFile_Name,In_UFW_Package,Erased_On_Full_Erase,Rewritten_By_Updater,Evidence_Grade,Description
+FLASH_HEADER,0x000000,0x000020,32,32 B,N/A (Header),YES (Entry 0),YES,YES,E3,SPI NOR Flash Header (Magic: Xn1\x07 CRC16: 0x51D8)
+RESERVED_BOOT,0x000020,0x0000A0,128,128 B,N/A,YES (Entry 0),YES,YES,E3,Hardware boot jump vector and padding
+UBOOT_BOOT,0x0000A0,0x00137F,4831,4.72 KB,uboot.boot,YES (Entry 0 + top/),YES,YES,E3,Flash secondary bootloader (q32s RISC binary)
+ISD_CONFIG,0x00137F,0x0013F9,122,122 B,isd_config.ini,YES (Entry 0 + top/),YES,YES,E3,SoC hardware configuration (SPI clock UART baud 1M reset pins)
+RESERVED_GAP,0x0013F9,0x002000,3079,3.01 KB,N/A,YES (Entry 0),YES,YES,E3,Alignment gap filled with 0x00 / 0xFF
+APP_DIR_HEAD,0x002000,0x002120,288,288 B,app_dir_head,YES (Entry 0),YES,YES,E3,SDFile directory index table (9 entries x 32 bytes)
+APP_BIN,0x002120,0x0329C8,198824,194.16 KB,app.bin,YES (Entry 0 + files/),YES,YES,E3,Main Gamepad Application (encrypted with ChipKey 0x190D)
+CFG_TOOL_BIN,0x0329C8,0x032C9A,722,722 B,cfg_tool.bin,YES (Entry 0 + files/),YES,YES,E3,Factory config tool parameters (AC632N_1..20 profile)
+P11_CODE_BIN,0x032CBA,0x033CBA,4096,4.00 KB,p11_code.bin,YES (Entry 0 + files/),YES,YES,E3,Low power / standby co-processor binary (zeroed)
+IMAGE_PADDING,0x033CBA,0x034000,838,838 B,N/A,YES (Entry 0),YES,YES,E3,4KB sector alignment padding to 0x034000
+VM_STORAGE,0x034000,0x07B000,290816,284.00 KB,VM,NO,YES,NO (Lost unless backed up),E3,Virtual Machine NVM user configuration and button remap data
+BTIF_RESERVED,0x07B000,0x07C000,4096,4.00 KB,BTIF,NO,YES,NO (Lost),E3,Bluetooth stack runtime information & bond keys
+EXIF_RESERVED,0x07C000,0x07D000,4096,4.00 KB,EXIF,NO,YES,NO (Lost),E3,External peripheral information & state records
+USERIF_RESERVED,0x07D000,0x07F000,8192,8.00 KB,USERIF,NO,YES,NO (Lost),E3,User interface customization & calibration parameters
+KEY_MAC_RESERVED,0x07F000,0x080000,4096,4.00 KB,key_mac,NO,YES,NO (Lost),E3,Factory unique MAC address & pairing authorization key

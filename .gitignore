@@ -1,0 +1,36 @@
+# Android & Gradle
+*.iml
+.gradle/
+/local.properties
+local.properties
+/.idea/
+.DS_Store
+/build/
+app/build/
+/captures
+.externalNativeBuild
+.cxx
+
+# ESP-IDF
+esp32s3_firmware/build/
+esp32s3_firmware/managed_components/
+firmware/build/
+firmware/managed_components/
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# Upstream Reference Repos & Large SDKs (Over 500MB upstream SDKs)
+iine_gamepad_jieli_mod/analysis/reference/*/
+iine_gamepad_jieli_mod/work/
+iine_gamepad_jieli_mod/build/
+*.rar
+
+# OS & Temp
+Thumbs.db
+*.tmp
+*.bak
+*.swp

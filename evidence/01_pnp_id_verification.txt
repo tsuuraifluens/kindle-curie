@@ -1,0 +1,28 @@
+================================================================================
+EVIDENCE 01: PnP ID Table and BLE DIS 0x2A50 Service Handler
+Target Binary: app.bin (JieLi AC632N / BD19 Application Image)
+Mapped Base:   0x01E00120
+================================================================================
+
+[1] Raw PnP ID Data Structure at Flash Offset 0x223BC (Virtual: 0x01E224DC):
+    Bytes (7 bytes standard PnP ID):
+    11 01 00 03 3B 05 07 10
+
+    Field Breakdown:
+    - Vendor ID Source: 0x11 (1 = Bluetooth SIG assigned, 2 = USB Implementers Forum)
+    - Vendor ID (VID):   0x0001 (01 00) -> Factory VID: 0x053B (Guangzhou JieLi / ShanWan)
+    - Product ID (PID):  0x3B03 (03 3B) -> Factory PID: 0x1007
+    - Product Version:   0x0705 (05 07) -> 0x0001 (v1.0.0)
+
+[2] DIS PnP ID Read Handler Code at Offset 0x4494 (Virtual: 0x01E045B4):
+    0x448C: mov r0, 0x01E224D4 ; ""
+    0x4494: mov r0, 0x01E1FAA0 ; "[BLE_HOGP]read PnP_ID\n"
+    0x449A: call printf
+    0x44AC: ldr r1, =pnp_id_data (0x01E224DC)
+    0x44B0: memcpy/return 7 bytes to BLE ATT response buffer
+
+[3] Kindle Verification Impact:
+    Amazon Kindle acsbtfd and input_manager query GATT 0x180A:0x2A50 upon connection.
+    devices.json contains allowlist: "0171:0443".
+    Factory firmware reports 053B:1007 -> Dropped by Kindle DeviceClassifier::classify.
+    Patch candidate modifies 0x223BC to 0x02, 0x71, 0x01, 0x43, 0x04, 0x00, 0x01.

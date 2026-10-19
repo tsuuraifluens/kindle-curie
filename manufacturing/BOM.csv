@@ -1,0 +1,46 @@
+Designator,Quantity,Part_Number,Package,Value/Parameters,Manufacturer,Sourcing_Channel,Unit_Price_100pcs_RMB,Alternate_Part,Supply_Risk,Critical_Component
+U1,1,ESP32-C3-WROOM-02-N4,Module 18x20mm,RISC-V 160MHz 400KB SRAM 4MB Flash BLE 5.0,Espressif Systems,立创商城 (C2934560) / 乐鑫官方,8.20,ESP32-C3-WROOM-02U (外接天线版) / ESP32-C3FN4 (单芯片),低 (全球量产主力料),YES
+U2,1,TP4057,SOT-23-6,1-Cell Li-ion Charger 4.2V 500mA max,南京拓微 (Top Power),立创商城 (C23681) / 嘉立创商城,0.28,TP4056 (需改SOP8封装) / ME4057 / LP4057,低 (国产巨量出货),YES
+U3,1,ME6211C33M5G,SOT-23-5,3.3V 500mA LDO Vdrop 100mV Iq 30uA,微盟 (Microne),立创商城 (C82942) / 嘉立创,0.22,XC6206P332MR (SOT-23) / SGM2036 / RT9013,极低 (通用LDO),YES
+Q1,1,AO3401A,SOT-23,P-MOSFET -30V -4.2A Rds 44mOhm,AOS (万代) / 友顺,立创商城 (C15127),0.12,SI2301CDS / CJ3401 / TPC6104,极低,NO
+Q2,1,AO3400A,SOT-23,N-MOSFET 30V 5.7A Rds 28mOhm,AOS (万代) / 长电,立创商城 (C20917),0.12,SI2302CDS / CJ3400 / 2N7002 (电流略小),极低,NO
+D1,1,1N5819WS,SOD-323,Schottky Diode 40V 1A Vf 0.35V,长电 (JCET) / 鲁光,立创商城 (C19113),0.06,B5819W / BAT54 / SS14,极低,NO
+D2,1,USBLC6-2SC6,SOT-23-6,Ultra-low Cap 3.5pF ESD Array 2-line,STMicroelectronics / 晶导微,立创商城 (C7519),0.20,SR05 / ESD7381 / PESD0502,极低,NO
+F1,1,SMD0805P050TF,0805,Resettable PTC 0.5A Hold 1.0A Trip 6V,聚鼎 (PTTC) / 陆海,立创商城 (C71449),0.12,JK-MSMD050 / Bourns MF-PSMF050X,极低,NO
+J1,1,TYPE-C-16P-072B,16Pin SMT,Type-C Female Receptacle 4x Through-hole Pegs,步步精 / 维峰五金,立创商城 (C2765186) / 阿里巴巴,0.55,KH-TYPE-C-16P / 任意标准16Pin沉板贴片,低,YES
+SW1,1,TS-1187A,SMD 3x6x2.5mm,Tactile Switch SPST 1.6N 100k cycles,宏聚 / 欧姆龙,立创商城 (C318884) / 淘宝企业店,0.12,TS-1187 / KAN0641 / 任意3x6微动,极低,YES
+SW2,1,TS-1187A,SMD 3x6x2.5mm,Tactile Switch SPST 1.6N 100k cycles,宏聚 / 欧姆龙,立创商城 (C318884) / 淘宝企业店,0.12,TS-1187 / KAN0641,极低,YES
+SW3,1,PTS810,SMD 3.2x4.2mm,Side-mount Micro Tact Switch SPST,C&K / 港源,立创商城 (C139794),0.18,TC-1102 / KAN0441,极低,NO
+LED1,1,KT-0603RG,0603,Dual-Color SMD LED Red/Green Common Cathode,国星光电 / 亿光,立创商城 (C2286),0.10,任意0603双色LED / 分开双单色LED,极低,NO
+LED2,1,0603_BLUE,0603,Blue SMD LED 465nm 20mA,国星光电 / 亿光,立创商城 (C2288),0.06,任意0603单色蓝灯,极低,NO
+MTR,1,0827_Flat_Motor,Dia 8mm T 2.7mm,Coin Vibration Motor 3.0V 45mA with Adhesive,常州微电机厂 / 阿里巴巴,阿里巴巴工厂店 / 淘宝,1.60,1027扁平电机 (直径10mm需微调沉槽) / 0820,低,YES
+BAT,1,402030_PCM,30x20x4.0mm,LiPo Pouch Battery 3.7V 200mAh with PCM,格瑞普 / 惠州倍特力 / 诺威,阿里巴巴工厂直供 / 淘宝,4.50,502030 (250mAh) / 402025 (150mAh),低,YES
+R1,1,0402WGF5101TCE,0402,5.1k Ohm 1% 1/16W,厚声 (UniOhm) / 国巨,立创商城,0.01,风华高科 / 罗姆,极低,NO
+R2,1,0402WGF5101TCE,0402,5.1k Ohm 1% 1/16W,厚声 (UniOhm) / 国巨,立创商城,0.01,风华高科 / 罗姆,极低,NO
+R3,1,0402WGF1002TCE,0402,10k Ohm 1% 1/16W,厚声 (UniOhm) / 国巨,立创商城,0.01,风华高科 / 罗姆,极低,NO
+R4,1,0402J0102T5E,0402,1k Ohm 5% 1/16W,厚声 (UniOhm) / 国巨,立创商城,0.01,风华高科,极低,NO
+R5,1,0402J0102T5E,0402,1k Ohm 5% 1/16W,厚声 (UniOhm) / 国巨,立创商城,0.01,风华高科,极低,NO
+R6,1,0402J0102T5E,0402,1k Ohm 5% 1/16W,厚声 (UniOhm) / 国巨,立创商城,0.01,风华高科,极低,NO
+R7,1,0402WGF1003TCE,0402,100k Ohm 1% 1/16W,厚声 (UniOhm) / 国巨,立创商城,0.01,风华高科,极低,NO
+R8,1,0402WGF1003TCE,0402,100k Ohm 1% 1/16W,厚声 (UniOhm) / 国巨,立创商城,0.01,风华高科,极低,NO
+R9,1,0402J0104T5E,0402,100k Ohm 5% 1/16W,厚声 (UniOhm) / 国巨,立创商城,0.01,风华高科,极低,NO
+R10,1,0402J0101T5E,0402,100 Ohm 5% 1/16W,厚声 (UniOhm) / 国巨,立创商城,0.01,风华高科,极低,NO
+R11,1,0402J0103T5E,0402,10k Ohm 5% 1/16W,厚声 (UniOhm) / 国巨,立创商城,0.01,风华高科,极低,NO
+R12,1,0402J0103T5E,0402,10k Ohm 5% 1/16W,厚声 (UniOhm) / 国巨,立创商城,0.01,风华高科,极低,NO
+R13,1,0402J0103T5E,0402,10k Ohm 5% 1/16W,厚声 (UniOhm) / 国巨,立创商城,0.01,风华高科,极低,NO
+C1,1,CL21A106KOQNNNE,0805,10uF 10V X5R 10%,三星 (Samsung) / 国巨,立创商城,0.04,村田 / 太阳诱电 / 风华,极低,NO
+C2,1,CL21A106KOQNNNE,0805,10uF 10V X5R 10%,三星 (Samsung) / 国巨,立创商城,0.04,村田 / 太阳诱电 / 风华,极低,NO
+C3,1,CL21A106KOQNNNE,0805,10uF 10V X5R 10%,三星 (Samsung) / 国巨,立创商城,0.04,村田 / 太阳诱电 / 风华,极低,NO
+C4,1,CL21A106KOQNNNE,0805,10uF 10V X5R 10%,三星 (Samsung) / 国巨,立创商城,0.04,村田 / 太阳诱电 / 风华,极低,NO
+C5,1,CC0402KRX7R7BB104,0402,100nF 16V X7R 10%,国巨 (Yageo) / 风华,立创商城,0.01,村田 / 三星,极低,NO
+C6,1,CC0402KRX5R6BB105,0402,1uF 10V X5R 10%,国巨 (Yageo) / 风华,立创商城,0.02,村田 / 三星,极低,NO
+C7,1,CC0402KRX7R9BB103,0402,10nF 50V X7R 10%,国巨 (Yageo) / 风华,立创商城,0.01,村田 / 三星,极低,NO
+C8,1,CC0402KRX7R7BB104,0402,100nF 16V X7R 10%,国巨 (Yageo) / 风华,立创商城,0.01,村田 / 三星,极低,NO
+C9,1,CC0402KRX7R7BB104,0402,100nF 16V X7R 10%,国巨 (Yageo) / 风华,立创商城,0.01,村田 / 三星,极低,NO
+PCB,1,KINDLE-REMOTE-PCB,2-Layer FR-4,50.0x22.0x1.2mm ENIG 1U Green,嘉立创 (JLCPCB),嘉立创在线下单系统,1.20,捷多邦 / 华秋电路,极低,YES
+MECH_TOP,1,Top_Enclosure,3D Print / Injection,PETG / ABS Matte White Shell,三维猴 / 自有拓竹打印机,3D打印农场 / 模具注塑,2.20,SLA光敏树脂,低,YES
+MECH_BOT,1,Bottom_Enclosure,3D Print / Injection,PETG / ABS Charcoal Black Shell,三维猴 / 自有拓竹打印机,3D打印农场 / 模具注塑,2.30,SLA光敏树脂,低,YES
+MECH_BTN1,1,Button_Cap_NEXT,3D Print / Injection,PETG / ABS Accent Teal Button Cap,三维猴 / 自有拓竹打印机,3D打印农场 / 模具注塑,0.40,SLA光敏树脂,低,YES
+MECH_BTN2,1,Button_Cap_PREV,3D Print / Injection,PETG / ABS Accent Teal Button Cap,三维猴 / 自有拓竹打印机,3D打印农场 / 模具注塑,0.40,SLA光敏树脂,低,YES
+FAST_NUT,4,M2x3.0mm_OD3.5,Heat-Set Brass Insert,M2 Internal Thread OD 3.5mm L 3.0mm,东莞标准五金,淘宝企业店 / 阿里巴巴,0.20,通用M2热熔滚花螺母,极低,NO
+FAST_SCR,4,M2x6mm_DIN7991,Countersunk Hex Screw,M2 Thread Length 6mm Stainless Steel,东莞标准五金,淘宝企业店 / 阿里巴巴,0.15,通用M2内六角沉头螺钉,极低,NO

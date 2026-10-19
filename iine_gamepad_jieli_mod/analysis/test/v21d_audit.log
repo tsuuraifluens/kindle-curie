@@ -1,0 +1,26 @@
+original SHA-256 : 73005E7C885AAB2A644ADFDF2DBADC01802B34427E9E6FEBF823F50D4D7745E9
+candidate SHA-256: 1BA7B3FC2DED26D22987995E339548F2EA49A56EA489BD82EB273D148132F3D2
+
+PASS  UFW size
+PASS  entry count
+PASS  UFW total length
+PASS  UFW header CRC
+PASS  UFW list CRC
+PASS  entry0 flash CRC
+PASS  entry0 off/size
+PASS  app data CRC
+PASS  JLFS entry hdr CRC
+PASS  JLFS area CRC
+PASS  JLFS area hdr CRC
+PASS  expected patches
+PASS  descriptor bytes
+PASS  leftover 2 bytes are original
+PASS  descriptor Report ID 2
+PASS  descriptor input 8B
+PASS  descriptor output 0B
+PASS  descriptor Consumer page
+PASS  no unexpected app changes
+PASS  app area outside unchanged
+PASS  tail 0xFF
+
+AUDIT RESULT: PASS

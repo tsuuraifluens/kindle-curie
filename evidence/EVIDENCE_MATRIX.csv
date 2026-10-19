@@ -1,0 +1,17 @@
+Claim ID,Finding/Claim,Evidence Grade,Source File,Offset/Symbol,Verification Method,Results,Residual Uncertainty
+EVID-01,SoC is Zhuhai JieLi AC632N/BD19,E3,uboot.boot & UFW header,0x00000C / 'AC632N',Cross-verified UFW header + isd_config.ini + PE updater strings,100% Match with AC632N architecture,None (Specific sub-model AC6321A vs AC6328A determined by pin count)
+EVID-02,CPU Core is JieLi q32s 32-bit RISC,E3,app.bin,0x000000 (Entry Point),Quarkslab Ghidra SLEIGH ISA spec disassembly of startup code,USP/SSP init; BSS clear; data copy matches q32s 100%,None
+EVID-03,App Area Entry Point at 0x01E00120,E3,decrypted.bin,0x002000 (app_dir_head),Parsed JLFS app_dir_head entry point field,Entry point exactly 0x01E00120,None
+EVID-04,0x120 Offset is JLFS App Directory Headers,E3,decrypted.bin,0x002000 - 0x002120,Calculated 9 x 32-byte directory headers (288 bytes = 0x120),Explains why code starts at 0x01E00120 (0x01E00000+0x120),None
+EVID-05,UFW Container Entry 0 is Raw Flash Image,E3,L1161 L1162 IINE-reader.ufw,0x000400 - 0x034400,CRC16 and SHA-256 cross-check with decrypted.bin,Matches flash.bin exactly (212992 bytes),None
+EVID-06,SFC Cipher uses ChipKey 0x190D,E3,isd_config.ini & decrypted.bin,Flash 0x002000 - 0x034000,jl_sfc_cipher Python reproduction and roundtrip decryption,100% lossless unscramble with 0x190D,None
+EVID-07,Integrity Verification uses only CRC16,E3,UFW container & JLFS,Multi-level CRC fields,Independent pure-python CCITT-FALSE calculation,Zero RSA/ECC signature blocks exist,None
+EVID-08,P11 Low-Power Coprocessor at 0x32C9A,E2,p11_code.bin,Flash 0x032C9A (4096 B),Disassembly of JLFS resource entry and p11 binary,Handles sleep wake-up from GPIO,None
+EVID-09,Firmware contains 6 Distinct Modes,E2,app.bin,0x0211C6 - 0x02120F,String xrefs and 0x7120 switch-case dispatcher,Reader; Xbox; KB; Mouse; Phone; Control confirmed,None
+EVID-10,IINE_reader uses Consumer Volume Keys,E3,app.bin,0x02280C (HID desc) & 0x00E7AC,Decoded HID report descriptor + remap_key disassembly,Emits 0x00E9/0x00EA in Usage Page 0x0C,Fatal root cause for Kindle rejection
+EVID-11,Standard Keyboard HID Desc exists in app.bin,E3,app.bin,0x022608 - 0x022648,Parsed 64-byte Report Map (Report ID 2; Usage Page 0x07),Fully capable 8-byte keyboard report descriptor,Needs routing hook from D-pad
+EVID-12,GATT ATT Database has 50+ Handles,E3,app.bin,0x022050 - 0x022350,Extracted and parsed ATT attribute table byte-by-byte,Handles 0x0001 - 0x0085 (DIS; BAS; HIDS; 0xAE40; 0xAE00),None
+EVID-13,Companion App uses Private Protocol (cmd: %s),E2,app.bin,0x008CFE - 0x009A00,Analyzed command parser and dispatch strings,set_kb; set_mouse; set_cs; set_mt; set_sleep,None
+EVID-14,Touch Screen Coordinate Emulation Engine,E2,app.bin,0x008D1E,Analyzed ios_x; ios_y; andr_x; andr_y mapping code,Interpolates physical buttons to touch swipes,None
+EVID-15,USB DFU Handshake is Pairing + B for 2s,E4,L1161 固件升级程序.exe & doc,0xf88dee / 升级步骤.doc,REA PE analysis + official engineer documentation,Reports ONLINE in firmware_upgrade_utility,Real hardware execution blocked by constraint
+EVID-16,Candidate Mod v0.1 Patch Accuracy,E3,candidate UFW,0x0211C6; 0x022384; 0x0223BC,Byte-by-byte differential audit against raw UFW,4 chunks modified; CRC16 recomputed cleanly,Physical hardware flash not attempted

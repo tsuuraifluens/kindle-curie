@@ -1,0 +1,27 @@
+================================================================================
+EVIDENCE 05: JieLi UFW Firmware Package Specification and Verification
+================================================================================
+
+[1] UFW Container Header (0x40 Bytes):
+    - 0x00..0x03: Magic "JLFW" (0x57464C4A)
+    - 0x04..0x05: Header CRC16 (CCITT-FALSE, polynomial 0x1021, init 0x0000)
+    - 0x06..0x07: Format Version (0x0100)
+    - 0x08..0x09: Reserved / Flags
+    - 0x0A..0x0B: Encrypted Entry Count (scrambled with key 0xFFFF)
+    - 0x0C..0x0F: Vendor String / Target Chip Name ("AC632N")
+    - 0x10..0x17: Timestamp & Build Signature
+    - 0x18..0x3F: SDK ID, Padding
+
+[2] Partition Entry Table:
+    Each entry is 0x50 bytes, XOR-scrambled with key 0xFFFF:
+    - Entry 0: uboot.boot (Base: 0x0000, Length: 4,831 bytes)
+    - Entry 1: app.bin    (Base: 0x2000, Length: 198,824 bytes, encrypted with ChipKey 0x190D)
+    - Entry 2: cfg_tool.bin (Base: 0x32000, Length: 722 bytes)
+    - Entry 3: p11_code.bin (Base: 0x32C9A, Length: 4,096 bytes)
+
+[3] Encryption Algorithm (jl_sfc_cipher):
+    Algorithm: 16-bit pseudo-random linear congruence feedback cipher.
+    ChipKey: 0x190D (extracted from isd_config.ini / uboot table).
+    Integrity: CRC16 attached to each partition descriptor.
+    Security Assessment: NO digital signature (RSA/ECC) present. Firmware can be modified
+    and repacked losslessly with 100% integrity verification.
