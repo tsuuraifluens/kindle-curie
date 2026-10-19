@@ -12,8 +12,9 @@
 
 | 固件文件名 | 推荐等级 | 功能特性与实机状态 | SHA-256 校验和 |
 | :--- | :---: | :--- | :--- |
-| **`IINE_Kindle_Click_v22s_keymap.ufw`** | ★★★★★<br>**(推荐稳定版)** | **已实机验证通过**：针对单手阅读习惯深度优化，A/B 翻页、方向键翻页与左右亮度调节完全正常，工作极其稳定。 | `2E517183D309BB2754DD30C6B056F0F6FC05A83335AADB2D82AE88C5E7DDB5FC` |
+| **`IINE_Kindle_Click_v24_FastConnect.ufw`** | ★★★★★<br>**(★首选极速版)** | **开机秒连优化**：在 v23 基础上，将 BLE 广播间隔优化为 **20ms** 极限密度，并直连 `ADV_IND`，**彻底解决 Kindle 开机连接需等待近 1 分钟的问题，提速至 1~2 秒秒连！** 同时保留 A+B 熄屏与完整翻页/调光。 | `5E7448EF3AFB53671FF4E2A56743659FED9A916FF5F937E2FBE0F235690F2072` |
 | **`IINE_Kindle_Click_v23_ABchord.ufw`** | ★★★★☆<br>*(组合键版)* | 在 v22s 稳定版基础上，追加实现 **A+B 同时按下熄屏/睡眠**（注入 Consumer Power `0x0030`）。 | `F4B18CD49CF547CADBE465F2C0F1937495761FF72A4D6F84E2E595CE280A6879` |
+| **`IINE_Kindle_Click_v22s_keymap.ufw`** | ★★★★☆<br>*(备选稳定版)* | 基础稳定版：针对单手阅读习惯深度优化，A/B 翻页、方向键翻页与左右亮度调节完全正常（无 A+B 熄屏）。 | `2E517183D309BB2754DD30C6B056F0F6FC05A83335AADB2D82AE88C5E7DDB5FC` |
 | **`IINE_Kindle_Click_v21b_Composite.ufw`** | ★★★☆☆<br>*(基准备用)* | 早期全功能实机通过版本（保留手柄出厂旧键位）。 | `29FDADE0BE86BA0AFD27569970D70620EBCBD8A7CE9DB54E920EEDBF9945729C` |
 
 ---

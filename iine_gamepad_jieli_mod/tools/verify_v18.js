@@ -1,0 +1,13 @@
+const fs=require('fs');
+const { sfcCipher } = require('./build_kindle_click.js');
+const raw=fs.readFileSync('work/our_v18_pnp.ufw');
+const dec=Buffer.from(raw.slice(0x400,0x400+0x34000));
+sfcCipher(dec,0x2000,0x33cba-0x2000,0x2000,0x190d);
+const app=dec.slice(0x2120);
+console.log('PnP builder @0x4168:', app.slice(0x4160,0x4190).toString('hex'));
+console.log('GAP reader   @0x211C6:', app.slice(0x211c6,0x211d2).toString('latin1'));
+console.log('GAP keyboard @0x211EB:', app.slice(0x211eb,0x211f9).toString('latin1'));
+console.log('DIS mfg      @0x22384:', app.slice(0x22384,0x22391).toString('latin1'));
+console.log('ADV patch    @0x4D36:', app.slice(0x4d36,0x4d3c).toString('hex'), '@0x4D58:', app.slice(0x4d58,0x4d60).toString('hex'), '@0x4D90:', app.slice(0x4d90,0x4d92).toString('hex'));
+console.log('Table1 A/B   @0x2289C/A2:', app.slice(0x2289c,0x228a8).toString('hex'));
+console.log('Table1 dpad  @0x228FC..:', app.slice(0x228fc,0x22914).toString('hex'));

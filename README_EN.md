@@ -31,8 +31,9 @@ All modified binary releases are archived in [`release/03_IINE_Gamepad_Mod/firmw
 
 | Firmware | Recommended | Description & Hardware Verification | SHA-256 Checksum |
 | :--- | :---: | :--- | :--- |
-| **`IINE_Kindle_Click_v22s_keymap.ufw`** | ★★★★★<br>**(Recommended Stable)** | **Ultimate One-Hand Layout**: Button A = Prev, Button B = Next, D-Pad Up/Down = Next/Prev, D-Pad Left/Right = Brightness Down/Up. Rock-solid stability; 100% verified on real hardware. | `2e517183d309bb2754dd30c6b056f0f6fc05a83335aadb2d82ae88c5e7ddb5fc` |
+| **`IINE_Kindle_Click_v24_FastConnect.ufw`** | ★★★★★<br>**(★Fast Reconnect)** | **Instant Connection Optimization**: Based on v23, tunes BLE advertising interval to **20ms** maximum density and bypasses ineffective directed advertising directly to `ADV_IND`. **Eliminates ~1 min boot latency, connecting in 1~2 seconds!** Full retention of A+B chord sleep & custom keymaps. | `5e7448ef3afb53671ff4e2a56743659fed9a916ff5f937e2fbe0f235690f2072` |
 | **`IINE_Kindle_Click_v23_ABchord.ufw`** | ★★★★☆<br>*(Chord Power Edition)* | Based on v22s, adds **A+B simultaneous chord press to put Kindle to sleep** (injects Consumer Power `0x0030`). | `f4b18cd49cf547cadbe465f2c0f1937495761ff72a4d6f84e2e595ce280a6879` |
+| **`IINE_Kindle_Click_v22s_keymap.ufw`** | ★★★★☆<br>*(Stable Baseline)* | **Ultimate One-Hand Layout**: Button A = Prev, Button B = Next, D-Pad Up/Down = Next/Prev, D-Pad Left/Right = Brightness Down/Up. Rock-solid stability; 100% verified on real hardware. | `2e517183d309bb2754dd30c6b056f0f6fc05a83335aadb2d82ae88c5e7ddb5fc` |
 | **`IINE_Kindle_Click_v21b_Composite.ufw`** | ★★★☆☆<br>*(Legacy Baseline)* | Early full-feature verified build retaining factory gamepad keymap. | `29fdade0be86ba0afd27569970d70620ebcbd8a7ce9db54e920eedbf9945729c` |
 
 ---
@@ -247,8 +248,9 @@ kind-curie/
 
 | Release Artifact | Path | SHA-256 Checksum |
 | :--- | :--- | :--- |
-| **IINE Kindle Mod v22s** | `release/03_IINE_Gamepad_Mod/firmware/IINE_Kindle_Click_v22s_keymap.ufw` | `2e517183d309bb2754dd30c6b056f0f6fc05a83335aadb2d82ae88c5e7ddb5fc` |
+| **IINE Kindle Mod v24 (Fast Reconnect)** | `release/03_IINE_Gamepad_Mod/firmware/IINE_Kindle_Click_v24_FastConnect.ufw` | `5e7448ef3afb53671ff4e2a56743659fed9a916ff5f937e2fbe0f235690f2072` |
 | **IINE Kindle Mod v23** | `release/03_IINE_Gamepad_Mod/firmware/IINE_Kindle_Click_v23_ABchord.ufw` | `f4b18cd49cf547cadbe465f2c0f1937495761ff72a4d6f84e2e595ce280a6879` |
+| **IINE Kindle Mod v22s** | `release/03_IINE_Gamepad_Mod/firmware/IINE_Kindle_Click_v22s_keymap.ufw` | `2e517183d309bb2754dd30c6b056f0f6fc05a83335aadb2d82ae88c5e7ddb5fc` |
 | **IINE Kindle Mod v21b** | `release/03_IINE_Gamepad_Mod/firmware/IINE_Kindle_Click_v21b_Composite.ufw` | `29fdade0be86ba0afd27569970d70620ebcbd8a7ce9db54e920eedbf9945729c` |
 | **IINE Factory Stock Backup** | `release/03_IINE_Gamepad_Mod/flasher/stock_backup/L1161 L1162.ufw` | `73005e7c885aab2a644adfdf2dbadc01802b34427e9e6febf823f50d4d7745e9` |
 | **ESP32-S3 Merged Binary** | `release/01_ESP32_Hardware_Remote/esp32s3/binaries/kindle_page_turner_v1.0.0_merged.bin` | `25aa6cae137f7c688327d532a4e23cf6347df2da62d04a6018318182df563b71` |

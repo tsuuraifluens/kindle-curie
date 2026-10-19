@@ -29,8 +29,13 @@ iine_gamepad_jieli_mod/work/
 iine_gamepad_jieli_mod/build/
 *.rar
 
+# Dependencies & Toolchains
+node_modules/
+iine_gamepad_jieli_mod/tools/toolchain/
+
 # OS & Temp
 Thumbs.db
 *.tmp
 *.bak
 *.swp
+

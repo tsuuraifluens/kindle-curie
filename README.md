@@ -31,8 +31,9 @@
 
 | 固件文件名 | 推荐等级 | 功能说明与实机测试状态 | SHA-256 完整性校验和 |
 | :--- | :---: | :--- | :--- |
-| **`IINE_Kindle_Click_v22s_keymap.ufw`** | ★★★★★<br>**(推荐稳定版)** | **单手阅读终极优化**：A 键上一页、B 键下一页、十字键上下翻页、十字键左右调节亮度。极其平稳，实机全测试用例通过。 | `2e517183d309bb2754dd30c6b056f0f6fc05a83335aadb2d82ae88c5e7ddb5fc` |
+| **`IINE_Kindle_Click_v24_FastConnect.ufw`** | ★★★★★<br>**(★首选极速版)** | **开机秒连终极优化**：在 v23 基础上，将 BLE 广播周期优化至 **20ms** 极限密度，绕过无效定向广播直通 `ADV_IND`，**彻底解决开机等待近 1 分钟痛点，实现 1~2 秒秒连！** 完整保留 A+B 组合键熄屏与翻页调光。 | `5e7448ef3afb53671ff4e2a56743659fed9a916ff5f937e2fbe0f235690f2072` |
 | **`IINE_Kindle_Click_v23_ABchord.ufw`** | ★★★★☆<br>*(组合键版)* | 在 v22s 基础上追加实现 **A+B 键同时按下进入息屏休眠**（注入 Consumer Power `0x0030`）。 | `f4b18cd49cf547cadbe465f2c0f1937495761ff72a4d6f84e2e595ce280a6879` |
+| **`IINE_Kindle_Click_v22s_keymap.ufw`** | ★★★★☆<br>*(备选稳定版)* | **单手阅读基础优化**：A 键上一页、B 键下一页、十字键上下翻页、十字键左右调节亮度。极其平稳，实机全测试用例通过。 | `2e517183d309bb2754dd30c6b056f0f6fc05a83335aadb2d82ae88c5e7ddb5fc` |
 | **`IINE_Kindle_Click_v21b_Composite.ufw`** | ★★★☆☆<br>*(基准备用)* | 早期全功能实机通过版本（保留手柄出厂旧键位）。 | `29fdade0be86ba0afd27569970d70620ebcbd8a7ce9db54e920eedbf9945729c` |
 
 ---
@@ -247,8 +248,9 @@ kind-curie/
 
 | 固件与工具文件 | 存储路径 | SHA-256 校验和 |
 | :--- | :--- | :--- |
-| **IINE Kindle Mod v22s** | `release/03_IINE_Gamepad_Mod/firmware/IINE_Kindle_Click_v22s_keymap.ufw` | `2e517183d309bb2754dd30c6b056f0f6fc05a83335aadb2d82ae88c5e7ddb5fc` |
+| **IINE Kindle Mod v24 (极速秒连)** | `release/03_IINE_Gamepad_Mod/firmware/IINE_Kindle_Click_v24_FastConnect.ufw` | `5e7448ef3afb53671ff4e2a56743659fed9a916ff5f937e2fbe0f235690f2072` |
 | **IINE Kindle Mod v23** | `release/03_IINE_Gamepad_Mod/firmware/IINE_Kindle_Click_v23_ABchord.ufw` | `f4b18cd49cf547cadbe465f2c0f1937495761ff72a4d6f84e2e595ce280a6879` |
+| **IINE Kindle Mod v22s** | `release/03_IINE_Gamepad_Mod/firmware/IINE_Kindle_Click_v22s_keymap.ufw` | `2e517183d309bb2754dd30c6b056f0f6fc05a83335aadb2d82ae88c5e7ddb5fc` |
 | **IINE Kindle Mod v21b** | `release/03_IINE_Gamepad_Mod/firmware/IINE_Kindle_Click_v21b_Composite.ufw` | `29fdade0be86ba0afd27569970d70620ebcbd8a7ce9db54e920eedbf9945729c` |
 | **良值官方原厂备份** | `release/03_IINE_Gamepad_Mod/flasher/stock_backup/L1161 L1162.ufw` | `73005e7c885aab2a644adfdf2dbadc01802b34427e9e6febf823f50d4d7745e9` |
 | **ESP32-S3 全量镜像** | `release/01_ESP32_Hardware_Remote/esp32s3/binaries/kindle_page_turner_v1.0.0_merged.bin` | `25aa6cae137f7c688327d532a4e23cf6347df2da62d04a6018318182df563b71` |

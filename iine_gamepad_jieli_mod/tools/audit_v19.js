@@ -1,0 +1,31 @@
+const fs=require('fs');
+const { crc16, crc32, encCipher, sfcCipher } = require('./build_kindle_click.js');
+const orig=fs.readFileSync('analysis/firmware/L1161 L1162.ufw');
+const v17=fs.readFileSync('C:/Users/weish/Documents/antigravity/kind-curie/kindle_click_jieli_port/firmware/IINE_Kindle_Click_Mod_v1.7.ufw');
+const v=fs.readFileSync('outputs/IINE_Kindle_Click_v19_PnPdirect.ufw');
+let P=0,F=0; function ck(n,c,x=''){ if(c){P++;console.log('PASS '+n+(x?'  '+x:''));}else{F++;console.log('FAIL '+n+(x?'  '+x:''));} }
+ck('size',v.length===645184,v.length);
+const regs=[['flash header',0x400,0x420],['boot vector',0x420,0x4a0],['uboot',0x4a0,0x137f],['isd_config',0x177f,0x17f9],['gap',0x17f9,0x2400],['cfg_tool',0x32dc8,0x3309a],['p11',0x3309a,0x3409a],['tail FF',0x340ba,0x34400]];
+for(const [n,s,e] of regs) ck(n, v.slice(s,e).equals(orig.slice(s,e)));
+const flash=v.slice(0x400,0x400+212992);
+const e0=Buffer.from(v.slice(0x40,0x90)); encCipher(e0,0,0x50,0xffff);
+ck('flash CRC',crc16(flash)===e0.readUInt32LE(4),'0x'+crc16(flash).toString(16));
+const h=Buffer.from(v.slice(0,0x40)); encCipher(h,0,0x40,0xffff);
+const num=h.readUInt16LE(8), hs=0x40+num*0x50;
+ck('list CRC',crc16(v.slice(0x40,hs))===h.readUInt16LE(2));
+ck('header CRC',crc16(h.slice(2,0x40))===h.readUInt16LE(0));
+const dec=Buffer.from(v.slice(0x400,0x400+0x34000)); sfcCipher(dec,0x2000,0x33cba-0x2000,0x2000,0x190d);
+const app=dec.slice(0x2120);
+ck('app data CRC',crc16(app.slice(0,198824))===dec.readUInt16LE(0x2022));
+ck('app entry hdr CRC',crc16(dec.slice(0x2022,0x2040))===dec.readUInt16LE(0x2020));
+ck('area data CRC',crc16(dec.slice(0x2020,0x2020+0x30c7a))===dec.readUInt16LE(0x2002));
+ck('area hdr CRC',crc16(dec.slice(0x2002,0x2020))===dec.readUInt16LE(0x2000));
+ck('PnP VID imm',app.slice(0x44ae,0x44b2).toString('hex')==='00fb7101');
+ck('PnP PID imm',app.slice(0x44c0,0x44c4).toString('hex')==='00fb4304');
+ck('PnP helper NOP',app.slice(0x44ce,0x44d0).toString('hex')==='0000');
+ck('T1 A',app.slice(0x2289c,0x228a2).toString('hex')==='0200004e0000');
+ck('T1 B',app.slice(0x228a2,0x228a8).toString('hex')==='0200004b0000');
+let r=[],i=0; while(i<v.length){ if(v[i]!==v17[i]){ let j=i; while(j<v.length&&v[j]!==v17[j]) j++; r.push([i,j]); i=j; } else i++; }
+console.log('diff vs v1.7:', r.map(([s,e])=>'0x'+s.toString(16)+'-0x'+e.toString(16)+'('+(e-s)+'B)').join(', '));
+console.log('file checksum:', crc16(v).toString(16).toUpperCase()+'-'+crc32(v).toString(16).toUpperCase());
+console.log(`\nSUMMARY: ${P} PASS, ${F} FAIL`);

@@ -11,7 +11,8 @@ Kindle Paperwhite 12 识别为 Kindle Click 兼容遥控器。当前采用
 |---|---|---|
 | v21b | 已实机：连接、翻页、亮度全部正常（旧键位） | `29FDADE0BE86BA0AFD27569970D70620EBCBD8A7CE9DB54E920EEDBF9945729C` |
 | v22s | **已实机：新键位全部正常；A+B 未实现** | `2E517183D309BB2754DD30C6B056F0F6FC05A83335AADB2D82AE88C5E7DDB5FC` |
-| v23 | 待实机：v22s + A+B 熄屏组合键 | `F4B18CD49CF547CADBE465F2C0F1937495761FF72A4D6F84E2E595CE280A6879` |
+| v23 | 已实机：v22s + A+B 熄屏组合键 (开机回连需近1分钟) | `F4B18CD49CF547CADBE465F2C0F1937495761FF72A4D6F84E2E595CE280A6879` |
+| v24 | **★极速回连版：20ms 极速广播 + 直通 ADV_IND (秒连 Kindle)** | `5E7448EF3AFB53671FF4E2A56743659FED9A916FF5F937E2FBE0F235690F2072` |
 
 `release/SHA256SUMS.txt` 包含 release 下全部 UFW 的哈希清单。
 
@@ -83,8 +84,10 @@ v23 额外实现：A+B 同时按住 → Consumer Power `0x0030`（熄屏/睡眠�
 | `tools/build_kindle_click.js` | 通用补丁/重打包流水线 |
 | `tools/build_v22s.js` | 安全键表版（当前已知可用） |
 | `tools/build_v22.js` | v23 A+B 组合键构建脚本（产出 v23） |
+| `tools/build_v24.js` | **v24 极速回连版构建脚本 (20ms 广播 + 直通 ADV_IND)** |
 | `tools/audit_v22s.js` | v22s 完整性/CRC/描述符审计 |
 | `tools/audit_v22.js` | v23/v22 完整性/CRC/描述符/trampoline 审计 |
+| `tools/audit_v24.js` | **v24 完整性/CRC/描述符/20ms 广播间隔审计** |
 | `tools/elf_vma.js` | 反汇编时修正 .text VMA |
 
 ## 重建与审计
@@ -94,9 +97,13 @@ v23 额外实现：A+B 同时按住 → Consumer Power `0x0030`（熄屏/睡眠�
 node tools/build_v22s.js
 node tools/audit_v22s.js
 
-# A+B 组合键候选
+# A+B 组合键版
 node tools/build_v22.js analysis/firmware/L1161` L1162.ufw outputs/IINE_Kindle_Click_v23_ABchord.ufw
 node tools/audit_v22.js analysis/firmware/L1161` L1162.ufw outputs/IINE_Kindle_Click_v23_ABchord.ufw
+
+# ★v24 极速回连优化版 (推荐)
+node tools/build_v24.js analysis/firmware/L1161` L1162.ufw outputs/IINE_Kindle_Click_v24_FastConnect.ufw
+node tools/audit_v24.js analysis/firmware/L1161` L1162.ufw outputs/IINE_Kindle_Click_v24_FastConnect.ufw
 ```
 
 审计覆盖 UFW 主头/列表/条目 0 CRC、JLFS 四层 CRC、补丁集、

@@ -1,15 +1,12 @@
 # 刷写安全检查表
 
-候选: `outputs/IINE_Kindle_Click_v23_ABchord.ufw`
+候选: `outputs/IINE_Kindle_Click_v24_FastConnect.ufw`
 日期: 2026-10-19
 
 ## 结论
 **候选固件本身可进入“人工刷写评估”；Codex 不自动刷写。**
 
-理由: v23 只修改 app 区键表、复合描述符和 A+B trampoline，并重算
-JLFS/UFW 校验；启动区、uboot、isd_config、cfg_tool、p11、flash 参数
-与设备唯一数据均未改变。v21b/v22s 已实际刷入并正常启动，说明该设备
-的升级链路可用。
+理由: v24 在已实机验证的 v23 基础上，仅修改了 3 个字节的广播参数（广播间隔 500ms -> 20ms、直通 ADV_IND），重算了完整的 JLFS/UFW 校验链；启动区、uboot、isd_config、cfg_tool、p11、flash 参数与设备唯一数据均未改变。v21b/v22s/v23 已实际刷入并正常启动，说明该设备的升级链路 100% 可靠。
 
 ## 设备与文件
 - 设备: 良值 L1161/L1162 迷你蓝牙手柄
@@ -17,10 +14,10 @@ JLFS/UFW 校验；启动区、uboot、isd_config、cfg_tool、p11、flash 参数
 - 升级模式 USB: `VID_4C4A&PID_3442`
 - 候选大小: 645,184 B
 - 候选 SHA-256:
-  `F4B18CD49CF547CADBE465F2C0F1937495761FF72A4D6F84E2E595CE280A6879`
+  `5E7448EF3AFB53671FF4E2A56743659FED9A916FF5F937E2FBE0F235690F2072`
 - 已知可用回退:
-  `IINE_Kindle_Click_v22s_keymap.ufw`
-  (`2E517183D309BB2754DD30C6B056F0F6FC05A83335AADB2D82AE88C5E7DDB5FC`)
+  `IINE_Kindle_Click_v23_ABchord.ufw` (`F4B18CD49CF547CADBE465F2C0F1937495761FF72A4D6F84E2E595CE280A6879`)
+  `IINE_Kindle_Click_v22s_keymap.ufw` (`2E517183D309BB2754DD30C6B056F0F6FC05A83335AADB2D82AE88C5E7DDB5FC`)
 - 原厂 SHA-256:
   `73005E7C885AAB2A644ADFDF2DBADC01802B34427E9E6FEBF823F50D4D7745E9`
 

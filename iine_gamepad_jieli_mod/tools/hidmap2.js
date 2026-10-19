@@ -1,0 +1,11 @@
+const fs=require('fs');
+const t=fs.readFileSync('work/hid-input.c','utf8');
+const m=t.match(/static const unsigned char hid_keyboard\[256\] = \{([\s\S]*?)\};/);
+const raw=m[1].replace(/unk/g,'9999');
+const nums=raw.match(/\d+/g).map(Number);
+console.log('parsed entries:',nums.length);
+const idx224=[],idx225=[];
+nums.forEach((v,i)=>{ if(v===224)idx224.push(i); if(v===225)idx225.push(i); });
+console.log('keyboard usages mapping to 224 (KEY_BRIGHTNESSDOWN):', idx224.map(x=>'0x'+x.toString(16)));
+console.log('keyboard usages mapping to 225 (KEY_BRIGHTNESSUP):', idx225.map(x=>'0x'+x.toString(16)));
+console.log('entries 0x6e..0x74:', nums.slice(0x6e,0x75));
