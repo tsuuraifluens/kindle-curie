@@ -68,7 +68,8 @@ release/
 └── 03_IINE_Gamepad_Mod/                         # 【方案三】良值手柄固件修改方案 (L1161/L1162)
     ├── README.md                                # 手柄按键功能图解、DFU 刷机与救砖 SOP
     ├── firmware/                                # 最终修改版 UFW 固件
-    │   ├── IINE_Kindle_Click_v24_FastConnect.ufw     # ★极速回连版 (20ms 广播秒连 + A+B 熄屏，首选推荐)
+    │   ├── IINE_Kindle_Click_v25_SleepLockout.ufw    # ★当前首选推荐 (熄屏防误触 + 20ms 秒连 + A+B 熄屏)
+    │   ├── IINE_Kindle_Click_v24_FastConnect.ufw     # 极速回连版 (20ms 广播秒连 + A+B 熄屏)
     │   ├── IINE_Kindle_Click_v23_ABchord.ufw         # 进阶功能版 (含 A+B 组合键熄屏)
     │   ├── IINE_Kindle_Click_v22s_keymap.ufw         # 推荐稳定版 (A/B 翻页、方向键翻页/调光，全实机通过)
     │   └── IINE_Kindle_Click_v21b_Composite.ufw      # 备用基准版 (旧键位)
@@ -87,6 +88,8 @@ release/
 在刷写前，可通过对比哈希值确保文件未受任何损坏：
 
 ### 1. 良值手柄修改固件 (`03_IINE_Gamepad_Mod/firmware/`)
+- `IINE_Kindle_Click_v25_SleepLockout.ufw`:  
+  `f67cd51ecb0980587f22e14fd0966762576baee0e5af2e7b1dd79fe31b0e5f53`
 - `IINE_Kindle_Click_v24_FastConnect.ufw`:  
   `5e7448ef3afb53671ff4e2a56743659fed9a916ff5f937e2fbe0f235690f2072`
 - `IINE_Kindle_Click_v23_ABchord.ufw`:  

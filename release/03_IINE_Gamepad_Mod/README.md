@@ -12,7 +12,8 @@
 
 | 固件文件名 | 推荐等级 | 功能特性与实机状态 | SHA-256 校验和 |
 | :--- | :---: | :--- | :--- |
-| **`IINE_Kindle_Click_v24_FastConnect.ufw`** | ★★★★★<br>**(★首选极速版)** | **开机秒连优化**：在 v23 基础上，将 BLE 广播间隔优化为 **20ms** 极限密度，并直连 `ADV_IND`，**彻底解决 Kindle 开机连接需等待近 1 分钟的问题，提速至 1~2 秒秒连！** 同时保留 A+B 熄屏与完整翻页/调光。 | `5E7448EF3AFB53671FF4E2A56743659FED9A916FF5F937E2FBE0F235690F2072` |
+| **`IINE_Kindle_Click_v25_SleepLockout.ufw`** | ★★★★★<br>**(★当前最新推荐)** | **熄屏防误触状态机**：在 v24 极速连接基础上，引入 2.5 秒硬件定时器冷却屏蔽与抬手锁存状态机。**彻底消除松开 A+B 时的微观异步抬手导致的误翻页与睡眠打断！** 包含秒连与全套功能。 | `F67CD51ECB0980587F22E14FD0966762576BAEE0E5AF2E7B1DD79FE31B0E5F53` |
+| **`IINE_Kindle_Click_v24_FastConnect.ufw`** | ★★★★★<br>*(极速秒连版)* | **开机秒连优化**：将 BLE 广播间隔优化为 **20ms** 极限密度并直连 `ADV_IND`，回连仅需 1~3 秒。含 A+B 熄屏（无抬手延迟屏蔽）。 | `5E7448EF3AFB53671FF4E2A56743659FED9A916FF5F937E2FBE0F235690F2072` |
 | **`IINE_Kindle_Click_v23_ABchord.ufw`** | ★★★★☆<br>*(组合键版)* | 在 v22s 稳定版基础上，追加实现 **A+B 同时按下熄屏/睡眠**（注入 Consumer Power `0x0030`）。 | `F4B18CD49CF547CADBE465F2C0F1937495761FF72A4D6F84E2E595CE280A6879` |
 | **`IINE_Kindle_Click_v22s_keymap.ufw`** | ★★★★☆<br>*(备选稳定版)* | 基础稳定版：针对单手阅读习惯深度优化，A/B 翻页、方向键翻页与左右亮度调节完全正常（无 A+B 熄屏）。 | `2E517183D309BB2754DD30C6B056F0F6FC05A83335AADB2D82AE88C5E7DDB5FC` |
 | **`IINE_Kindle_Click_v21b_Composite.ufw`** | ★★★☆☆<br>*(基准备用)* | 早期全功能实机通过版本（保留手柄出厂旧键位）。 | `29FDADE0BE86BA0AFD27569970D70620EBCBD8A7CE9DB54E920EEDBF9945729C` |
@@ -40,7 +41,7 @@
 | **方向键 ↓ (下)** | **上一页 (Prev)** | Keyboard Usage `0x4B` (`KEY_PAGEUP`) | 满足部分读者拇指习惯 |
 | **方向键 ← (左)** | **降低亮度** | Consumer Control Usage `0x0070` (`Brightness Down`) | Kindle 屏幕前光减弱 1 级 |
 | **方向键 → (右)** | **提高亮度** | Consumer Control Usage `0x006F` (`Brightness Up`) | Kindle 屏幕前光增强 1 级 |
-| **A + B 键 (v23专属)** | **熄屏 / 睡眠** | Consumer Control Usage `0x0030` (`Power/Sleep`) | Kindle 立即熄屏休眠 |
+| **A + B 键 (v23/v24/v25)** | **熄屏 / 睡眠 (带防误触屏蔽)** | Consumer Control Usage `0x0030` (`Power/Sleep`) | Kindle 立即熄屏休眠 (v25 附带 2.5s 抬手防误触屏蔽) |
 
 ---
 
