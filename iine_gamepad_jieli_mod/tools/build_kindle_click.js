@@ -52,9 +52,51 @@ function build(origPath, outPath, opts = {}) {
   const appCrcBefore = crc16(dec.slice(appOff, appOff + appSize));
   const storedCrc = dec.readUInt16LE(0x2022);
 
+  // === HARDWARE & FIRMWARE SAFETY GATES (Anti-Brick & Anti-Corruption Protection) ===
+  // In JieLi AC6321A / BD19 architecture:
+  // - app.bin 0x00000..0x2DEA6 (VMA 0x1E00120..0x1E2DFC6): Executable .text & .rodata
+  // - app.bin 0x2DEA8..0x308A8: Flash LMA of RAM .data sections copied to RAM on MCU boot:
+  //     * 0x2DEA8..0x2EB08 (3168B) -> RAM 0x0840..0x14A0 (BLE Stack context, GATT handles, RF buffers)
+  //     * 0x2EB08..0x30890 (7560B) -> RAM 0x40C0..0x5E48 (System OS & peripheral structures)
+  // CRITICAL RULE: Never inject code, descriptors, or write patches to offset >= 0x2DEA8!
+  // Doing so corrupts RAM at boot time via memcpy in _start (1e0016c), crashing the BLE stack!
+  const RAM_DATA_LMA_START = 0x2dea8;
+  const RAM_DATA_LMA_END   = 0x30890;
+  const VMA_BASE           = 0x1e00120;
+  const TEXT_VMA_END       = VMA_BASE + RAM_DATA_LMA_START; // 0x1E2DFC8
+
   const patches = (opts.patches || defaultPatches());
   for (const [name, off, bytes] of patches) {
-    Buffer.from(bytes).copy(dec, appOff + off);
+    const patchBuf = Buffer.from(bytes);
+
+    // GATE 1: App boundary check
+    if (off < 0 || off + patchBuf.length > appSize) {
+      throw new Error(`[SECURITY AUDIT FAIL] Patch "${name}" at offset 0x${off.toString(16)} (length ${patchBuf.length}) exceeds app.bin boundary (0x${appSize.toString(16)})!`);
+    }
+
+    // GATE 2: RAM .data Flash Load Image Protection (Anti-BLE Stack Corruption)
+    if (off + patchBuf.length > RAM_DATA_LMA_START && !opts.allowDataLoadSegment) {
+      throw new Error(
+        `[SECURITY AUDIT FAIL] Patch "${name}" at offset 0x${off.toString(16)} (length ${patchBuf.length}) touches RAM .data load image (>= 0x${RAM_DATA_LMA_START.toString(16)})!\n` +
+        `This region is copied into runtime RAM during MCU boot (0x0840..0x14A0 & 0x40C0..0x5E48).\n` +
+        `Injecting code or patching here corrupts critical RAM variables including the BLE stack (causing instant disconnects).\n` +
+        `All executable code and descriptors MUST be placed strictly within .text (< 0x${RAM_DATA_LMA_START.toString(16)}).`
+      );
+    }
+
+    // GATE 3: Code Jump Target VMA Validation (Anti-Data Execution)
+    // Scan patch bytes for 32-bit little-endian pointers in firmware address space (0x01E00000..0x01E40000)
+    for (let i = 0; i <= patchBuf.length - 4; i++) {
+      const ptr = patchBuf.readUInt32LE(i);
+      if (ptr >= TEXT_VMA_END && ptr <= VMA_BASE + RAM_DATA_LMA_END) {
+        throw new Error(
+          `[SECURITY AUDIT FAIL] Patch "${name}" contains pointer 0x${ptr.toString(16)} at byte offset ${i} targeting RAM .data Flash load image [0x${TEXT_VMA_END.toString(16)}..0x${(VMA_BASE + RAM_DATA_LMA_END).toString(16)})!\n` +
+          `Jumping to or executing from the RAM .data load segment is strictly prohibited.`
+        );
+      }
+    }
+
+    patchBuf.copy(dec, appOff + off);
   }
 
   // JLFS CRC chain
