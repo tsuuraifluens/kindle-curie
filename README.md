@@ -31,7 +31,7 @@
 
 | 固件文件名 | 推荐等级 | 功能说明与实机测试状态 | SHA-256 完整性校验和 |
 | :--- | :---: | :--- | :--- |
-| **`IINE_Kindle_Click_v25_SleepLockout.ufw`** | ★★★★★<br>**(★当前最新推荐)** | **熄屏防误触状态机**：在 v24 极速连接基础上，引入 2.5 秒硬件定时器冷却屏蔽与抬手锁存状态机。**彻底消除松开 A+B 时的微观异步抬手导致的误翻页与睡眠打断！** 包含秒连与全套功能。 | `f67cd51ecb0980587f22e14fd0966762576baee0e5af2e7b1dd79fe31b0e5f53` |
+| **`IINE_Kindle_Click_v25_SleepLockout.ufw`** | ★★★★★<br>**(★当前最新推荐)** | **熄屏防误触状态机**：在 v24 极速连接基础上，引入 2.5 秒硬件定时器冷却屏蔽与抬手锁存状态机。**彻底消除松开 A+B 时的微观异步抬手导致的误翻页与睡眠打断！** 包含秒连与全套功能。 | `c17d1026179b96eb18e63a96f7f396a9bc22d64e4e91281971b31e3abcab9acf` |
 | **`IINE_Kindle_Click_v24_FastConnect.ufw`** | ★★★★★<br>*(极速秒连版)* | **开机秒连终极优化**：在 v23 基础上，将 BLE 广播周期优化至 **20ms** 极限密度，绕过无效定向广播直通 `ADV_IND`，**彻底解决开机等待近 1 分钟痛点，实现 1~2 秒秒连！** 完整保留 A+B 组合键熄屏与翻页调光。 | `5e7448ef3afb53671ff4e2a56743659fed9a916ff5f937e2fbe0f235690f2072` |
 | **`IINE_Kindle_Click_v23_ABchord.ufw`** | ★★★★☆<br>*(组合键版)* | 在 v22s 基础上追加实现 **A+B 键同时按下进入息屏休眠**（注入 Consumer Power `0x0030`）。 | `f4b18cd49cf547cadbe465f2c0f1937495761ff72a4d6f84e2e595ce280a6879` |
 | **`IINE_Kindle_Click_v22s_keymap.ufw`** | ★★★★☆<br>*(备选稳定版)* | **单手阅读基础优化**：A 键上一页、B 键下一页、十字键上下翻页、十字键左右调节亮度。极其平稳，实机全测试用例通过。 | `2e517183d309bb2754dd30c6b056f0f6fc05a83335aadb2d82ae88c5e7ddb5fc` |
@@ -249,7 +249,7 @@ kind-curie/
 
 | 固件与工具文件 | 存储路径 | SHA-256 校验和 |
 | :--- | :--- | :--- |
-| **IINE Kindle Mod v25 (熄屏防误触)** | `release/03_IINE_Gamepad_Mod/firmware/IINE_Kindle_Click_v25_SleepLockout.ufw` | `f67cd51ecb0980587f22e14fd0966762576baee0e5af2e7b1dd79fe31b0e5f53` |
+| **IINE Kindle Mod v25 (熄屏防误触)** | `release/03_IINE_Gamepad_Mod/firmware/IINE_Kindle_Click_v25_SleepLockout.ufw` | `c17d1026179b96eb18e63a96f7f396a9bc22d64e4e91281971b31e3abcab9acf` |
 | **IINE Kindle Mod v24 (极速秒连)** | `release/03_IINE_Gamepad_Mod/firmware/IINE_Kindle_Click_v24_FastConnect.ufw` | `5e7448ef3afb53671ff4e2a56743659fed9a916ff5f937e2fbe0f235690f2072` |
 | **IINE Kindle Mod v23** | `release/03_IINE_Gamepad_Mod/firmware/IINE_Kindle_Click_v23_ABchord.ufw` | `f4b18cd49cf547cadbe465f2c0f1937495761ff72a4d6f84e2e595ce280a6879` |
 | **IINE Kindle Mod v22s** | `release/03_IINE_Gamepad_Mod/firmware/IINE_Kindle_Click_v22s_keymap.ufw` | `2e517183d309bb2754dd30c6b056f0f6fc05a83335aadb2d82ae88c5e7ddb5fc` |

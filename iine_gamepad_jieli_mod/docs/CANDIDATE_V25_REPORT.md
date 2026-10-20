@@ -1,4 +1,4 @@
-# 候选固件 v25 技术报告：A+B 组合键熄屏后输入屏蔽与防误触冷却状态机
+# 候选固件 v25 技术报告：A+B 组合键熄屏后输入屏蔽与防误触冷却状态机 (修复版)
 
 ## 1. 背景与问题描述
 
@@ -18,11 +18,38 @@
 
 ---
 
-## 2. 解决方案与状态机设计
+## 2. 初版 v25 断联 Bug 根因定位与终极修复
 
-为彻底消除异步抬手造成的误触发，v25 固件引入了基于硬件毫秒定时器的**输入屏蔽与释放锁存状态机**：
+在最初尝试编译 v25 时，实机测试反馈出现 **“连接成功后很快就断联”** 的现象。
 
-### 状态机核心机制
+### 致命根因：`0x2E100` 并非代码空洞，而是 RAM `.data` 的 Flash 加载映像！
+1. 深入分析 JieLi AC6321A 固件架构：
+   - `app.bin` 的可执行代码与只读常量段（`.text` + `.rodata`）在 `0x2DEA6`（VMA `0x1E2DFC6`）即已宣告结束。
+   - 紧随其后的 `0x2DEA8` 至 `0x308A8` 区域，**根本不是 Flash 填充或代码间隙**，而是系统 RAM `.data` 段的 Flash 加载映像（LMA）。
+   - 在芯片上电复位入口 `_start`（`0x1E0016C..0x1E0018E`）中，系统执行：
+     ```assembly
+     1e0016c: r0 = 0x0840        ; RAM 目标首地址
+     1e00172: r1 = 0x1E2DFC8     ; Flash 源地址 (app.bin + 0x2DEA8)
+     1e00178: r2 = 3168          ; 长度 (字节)
+     ...
+     1e00182: r3 = [r1 ++= 4]
+     1e00186: [r0 ++= 4] = r3    ; 循环 memcpy 到 RAM
+     ```
+   - 初版补丁将 90 字节代码写在 `0x2E100`，正好落入 `0x2DEA8 + 600` 位置，导致 MCU 每次开机将这串机器码当成初始化数据拷贝到 **RAM `0x0A98`**！
+   - 而 RAM `0x0A98` 恰恰分配给了 **BLE 协议栈底层活跃连接与 GATT 属性上下文**！
+   - 一旦 Kindle 建立连接，BLE 协议栈访问被篡改的内存结构立即发生异常，导致链路在握手完成后几秒内强制断开！
+
+### 架构修复：严格回归 `.text` 代码段（`0x2260A`）
+- v22、v23、v24 运行 100% 稳定的核心基石，是将蹦床例程安置在 `0x2260A`（VMA `0x1E2272A`）——即旧键盘描述符槽位（长度 70 字节，`0x2260A..0x2264F`）。
+- 我们通过精细寄存器调优（将高寄存器 `r12` 优化为低寄存器 `r6`，使加载、条件跳转与减法均降维为 16 位紧凑指令），成功将防误触状态机压缩至 **64 字节**！
+- 64 字节严格放置在 `0x2260A..0x22649`，完全在 70 字节空间内，**完全不触碰后续鼠标描述符（`0x2264F`）**。
+- `0x2DEA8` 及之后的 RAM `.data` 映像保持 **100% 原厂二进制一致**，从根本上确保 BLE 协议栈内存零污染！
+
+---
+
+## 3. 解决方案与状态机设计
+
+### 状态机核心机制 (64 字节紧凑版)
 
 ```
 [正常空闲/阅读模式]
@@ -33,17 +60,16 @@
   1. 向主机发送 Consumer Power (r0 = 4, 虚拟键 2)
   2. 记录当前硬件时间戳 now = [0x2ADC]
   3. 设置冷却截止时间: lockout = now + 2500ms (2.5秒安全冷却期)
-  4. 置位组合键活跃标志: active = 1
         │
         ▼
-[2.5秒全按键屏蔽与抬起锁存期 (active == 1 || now < lockout)]
-  - 帧 1: 立即释放按键 (r0 = 0)，向主机发送单次短促按键脉冲，避免长按触发重启菜单
+[2.5秒全按键屏蔽与抬起锁存期 (now < lockout || r0 & 3 != 0)]
+  - 帧 1: 立即释放按键 (r0 = 0)，向主机发送单次短促按键脉冲，避免长按唤出关机选单
   - 帧 2..N: 强制所有按键输入置零 (r0 = 0)，屏蔽 A/B/方向键等所有信号
-  - 抬手检测:
-      * 若手指未完全松开 (r0 & 3 != 0)，active 保持 1，继续屏蔽
-      * 只有当 A 和 B 均完全离开按键行程 (r0 & 3 == 0) 后，active 才清除为 0
+  - 抬手检测 (Release Latch):
+      * 若手指未完全松开 (r0 & 3 != 0)，无论 2.5s 是否过去，均继续屏蔽输入 (r0 = 0)
+      * 只有当 A 和 B 均完全离开按键行程 (r0 & 3 == 0) 且时间已过 2.5s，才清空 lockout
         │
-        │ 当 now >= lockout 且 active == 0 (双键均已完全释放)
+        │ 当 now >= lockout 且 r0 & 3 == 0 (双键均已完全释放)
         ▼
 [自动恢复正常阅读模式]
   - 消除屏蔽，所有单键 (A 上一页 / B 下一页 / 方向键亮度调节) 恢复 0ms 零延迟响应
@@ -51,61 +77,46 @@
 
 ### 状态变量存储安全验证
 
-为确保在杰理 AC6321A 上运行的状态变量持久、安全且不踩内存：
-- **硬件时间源**：`0x2ADC` 为系统全局 32 位毫秒硬件计数器（1 tick = 1 ms），由定时器中断驱动，运行 49.7 天才溢出。
+- **硬件时间源**：`0x2ADC` 为系统全局 32 位毫秒硬件计数器（1 tick = 1 ms），由定时器中断驱动。
 - **状态变量槽位**：
   - `0x2B94` (uint32)：`lockout_deadline`（毫秒截止时间戳）
-  - `0x2B98` (uint32)：`chord_active`（组合键活跃标志）
-  - 经全面扫描反汇编表与符号表，`0x2B90..0x2B9C` 处于全局控制器结构体尾部空闲段，属于 BSS 区，开机自动清零，且原厂固件中访问次数为 0，绝对安全。
+  - 经全面扫描反汇编表与符号表，`0x2B94` 处于全局控制器结构体尾部空闲段，属于 BSS 区，开机自动清零，且原厂固件中访问次数为 0，绝对安全。
 
 ---
 
-## 3. 汇编实现与代码布局
-
-为避免破坏任何既有描述符，v25 将 90 字节的状态机例程注入至 **`0x2E100`（VMA `0x1E2E220`）**。该区域在原厂固件中位于 `0x2E0E5..0x2E450` 连续 **875 字节全零对齐间隙**内，空间充裕且 100% 独立。
+## 4. 汇编实现代码 (64 字节)
 
 ```assembly
 	.text
-	.globl chord_lockout
-chord_lockout:
+	.globl chord_lockout_r6
+chord_lockout_r6:
 	[--sp] = {rets, r13-r4}      ; 保护寄存器 (与 0x1E0C820 退出时弹出配对)
 	r4 = r1                      ; r4 = 报文输出缓冲指针 (供 0x1E0C820 使用)
-	r5 = 0x2B90                  ; 状态变量基址
-	r12 = [r5 + 8]               ; 读取 active 标志 (@0x2B98)
 	r2 = r0 & 3                  ; 提取 A (bit 0) 与 B (bit 1)
-
-	if (r12 != 0) goto check_active ; 若组合键仍在活跃周期，跳转抬手检测
-
-	r13 = [r5 + 4]               ; 读取 lockout 截止时间 (@0x2B94)
-	if (r13 == 0) goto check_trigger ; 若当前无冷却，跳转触发检测
-
+	r5 = 0x2B94                  ; 状态变量地址 (lockout deadline @0x2B94)
 	r3 = 0x2ADC                  ; 系统毫秒时间源
+	r6 = [r5 + 0]                ; 读取当前冷却截止时间
+	if (r6 == 0) goto check_chord ; 若当前无冷却，跳转触发检测
+
 	r1 = [r3 + 0]                ; r1 = now
-	r1 = r1 - r13                ; r1 = now - lockout
-	ifs (r1 < 0) goto suppress   ; 若 now < lockout (有符号比较)，处于冷却期，强制屏蔽
+	r1 = r1 - r6                 ; r1 = now - deadline
+	ifs (r1 < 0) goto suppress   ; 若 now < deadline (有符号比较)，处于冷却期，强制屏蔽
+	if (r2 != 0) goto suppress   ; 抬起锁存：若手指未完全松开，继续屏蔽
 
 	r1 = 0
-	[r5 + 4] = r1               ; 冷却到期，清空 lockout 变量
+	[r5 + 0] = r1                ; 冷却到期且已完全松开，清空 lockout 变量
 
-check_trigger:
-	if (r2 != 3) goto body       ; 非 A+B 组合按键，正常放行
+check_chord:
+	if (r2 != 3) goto body       ; 非 A+B 组合按键，正常放行 (0ms 延迟)
 
-	r3 = 0x2ADC                  ; A+B 首次同时按下！
-	r1 = [r3 + 0]                ; 读取当前时间
-	r1 += 2500                  ; 设定 2.5 秒冷却时间 (now + 2500ms)
-	[r5 + 4] = r1               ; 写入 lockout
-	r1 = 1
-	[r5 + 8] = r1               ; 置位 active = 1
-	r0 = 4                      ; 输出虚拟键 2 (Consumer Power 0x0030)
+	r1 = [r3 + 0]                ; A+B 首次同时按下！
+	r1 += 2500                   ; 设定 2.5 秒冷却时间 (now + 2500ms)
+	[r5 + 0] = r1                ; 写入 lockout
+	r0 = 4                       ; 输出虚拟键 2 (Consumer Power 0x0030)
 	goto body
 
-check_active:
-	if (r2 != 0) goto suppress   ; 若 A 或 B 仍有按住，继续保持 active 并屏蔽
-	r1 = 0
-	[r5 + 8] = r1               ; 两键均已抬起，清除 active 标志
-
 suppress:
-	r0 = 0                      ; 强制置零输入掩码，吞掉残存按键与误操作
+	r0 = 0                       ; 强制置零输入掩码，吞掉残存按键与误操作
 
 body:
 	r11 = r0                     ; r11 = 处理后的输入按键掩码
@@ -116,7 +127,7 @@ body:
 
 ---
 
-## 4. 21 项全自动化校验与审计结果
+## 5. 22 项全自动化校验与审计结果
 
 通过 [audit_v25.js](file:///c:/Users/weish/Documents/antigravity/kind-curie/iine_gamepad_jieli_mod/tools/audit_v25.js) 以及杰理官方解包工具 `fwunpack_newfw.py` 进行审计：
 
@@ -125,21 +136,24 @@ body:
   - UFW Header CRC（PASS）
   - UFW List CRC（PASS）
   - Entry 0 Flash CRC（PASS）
-  - JLFS app.bin Data CRC `0x1968`（PASS）
-  - JLFS Entry Header CRC `0x98A6`（PASS）
-  - JLFS Area Data CRC `0xA0B3`（PASS）
-  - JLFS Area Header CRC `0x89D3`（PASS）
+  - JLFS app.bin Data CRC `0xCA3D`（PASS）
+  - JLFS Entry Header CRC `0xFFF3`（PASS）
+  - JLFS Area Data CRC `0x6041`（PASS）
+  - JLFS Area Header CRC `0xD39A`（PASS）
 - [x] **未修改安全区域验证**：
   - `[0x400 : 0x2400]` Uboot 引导分区：100% 逐字节一致
+  - `[0x2004 : 0x2020]` JLFS 头部元数据：100% 逐字节一致
   - `[0x34400 : EOF]` Flash 外部所有配置与恢复扇区：100% 逐字节一致
+- [x] **BLE 协议栈安全**：
+  - `0x2DEA8..0x308A8` RAM `.data` 加载映像 100% 原厂一致，零内存污染！
 - [x] **HID 复合描述符结构**：87 字节，包含键盘（Report ID 2）及内嵌 Consumer Usage
 - [x] **BLE 极速连接优化**：20ms 广播间隔（32 slots）与 DIRECT_ADV 自动绕过机制完整保留
-- [x] **Flash 区域非授权变动**：0 处非法越界，改动严格收敛在补丁声明区域内
+- [x] **Flash 区域非授权变动**：0 处非法越界，改动严格收敛在 23 处声明补丁内
 
 ---
 
-## 5. 固件交付物信息
+## 6. 固件交付物信息
 
 | 固件版本 | 文件路径 | SHA-256 校验和 |
 | :--- | :--- | :--- |
-| **v25 熄屏防误触版** | `release/03_IINE_Gamepad_Mod/firmware/IINE_Kindle_Click_v25_SleepLockout.ufw` | `F67CD51ECB0980587F22E14FD0966762576BAEE0E5AF2E7B1DD79FE31B0E5F53` |
+| **v25 熄屏防误触版** | `release/03_IINE_Gamepad_Mod/firmware/IINE_Kindle_Click_v25_SleepLockout.ufw` | `C17D1026179B96EB18E63A96F7F396A9BC22D64E4E91281971B31E3ABCAB9ACF` |

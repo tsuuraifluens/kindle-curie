@@ -8,11 +8,18 @@
 // 2. Kindle e-ink display refresh and suspend transition takes ~1.5-2.0 seconds.
 //    Any input event received during this window can wake Kindle back up or turn pages.
 //
-// Solution (v25 State Machine):
+// Root cause of disconnect bug in initial v25 attempt:
+// - In JieLi AC6321A, executable .text ends at 0x2DEA6 (VMA 0x1E2DFC6).
+// - Offset 0x2DEA8 onwards is the Flash load image of RAM .data copied to RAM 0x0840 on boot.
+// - Injecting code at 0x2E100 corrupted the BLE stack connection structures in RAM 0x0A98!
+// - Fix: Place the lockout state machine strictly within .text inside the verified 70-byte
+//   unused keyboard descriptor slot at 0x2260A (VMA 0x1E2272A), exactly where v24 trampoline lived.
+// - RAM .data image (0x2DEA8 onwards) remains 100% byte-for-byte identical to stock firmware.
+//
+// Solution (v25 State Machine, 64 bytes @0x2260A):
 // - When A+B is first pressed simultaneously (r0 & 3 == 3):
 //   1. Trigger Virtual Key 2 (Consumer Power 0x0030) on rising edge.
-//   2. Set lockout deadline = now + 2500ms (2.5 seconds wall-clock time from hardware ms timer @0x2ADC).
-//   3. Set chord_active flag = 1.
+//   2. Set lockout deadline = now + 2500ms (from hardware ms timer @0x2ADC).
 // - During the 2.5s lockout window:
 //   - All input is completely suppressed (r0 = 0).
 //   - The Power key is immediately released on frame 1 (clean short tap).
@@ -43,46 +50,38 @@ const COMPOSITE_KB = Buffer.from([
 
 if (COMPOSITE_KB.length !== 87) throw new Error('descriptor length');
 
-// Chord lockout state machine routine at VMA 0x1E2E220 (app.bin 0x2E100, 875-byte zero alignment gap)
-const CHORD_LOCKOUT = Buffer.from([
+// Chord lockout state machine routine at VMA 0x1E2272A (app.bin 0x2260A, 64 bytes)
+const CHORD_LOCKOUT_64 = Buffer.from([
   0x7d, 0x01,                         // [--sp] = {rets, r13-r4}
-  0x14, 0x08,                         // r4 = r1 (save output buffer)
-  0x05, 0xfb, 0x90, 0x2b,             // r5 = 0x2b90 (RAM base for state variables)
-  0x0c, 0xf6, 0x08, 0x50,             // r12 = [r5 + 8] (active flag @0x2B98)
-  0x22, 0xfd, 0x03, 0x09,             // r2 = r0 & 3 (A/B key bits)
-  0x0c, 0xe0, 0x19, 0x10,             // if (r12 != 0) goto check_active (+50 -> 0x46)
-  0x0d, 0xf6, 0x04, 0x50,             // r13 = [r5 + 4] (lockout deadline @0x2B94)
-  0x0d, 0xe0, 0x09, 0x00,             // if (r13 == 0) goto check_trigger (+18 -> 0x2E)
-  0x03, 0xfb, 0xdc, 0x2a,             // r3 = 0x2adc (hardware millisecond timer)
+  0x14, 0x08,                         // r4 = r1 (save output buffer pointer)
+  0x22, 0xfd, 0x03, 0x09,             // r2 = r0 & 3 (isolate A and B keys)
+  0x05, 0xfb, 0x94, 0x2b,             // r5 = 0x2B94 (RAM BSS lockout deadline)
+  0x03, 0xfb, 0xdc, 0x2a,             // r3 = 0x2ADC (hardware millisecond timer)
+  0x06, 0x4a,                         // r6 = [r5 + 0] (read lockout deadline)
+  0x07, 0x2c,                         // if (r6 == 0) goto check_chord (+14 -> 0x22)
   0x01, 0x46,                         // r1 = [r3 + 0] (now)
-  0x90, 0xfb, 0xd0, 0x11,             // r1 = r1 - r13 (now - lockout)
-  0x01, 0xe0, 0x11, 0xb0,             // ifs (r1 < 0) goto suppress (+34 -> 0x4C)
+  0xa1, 0xb3,                         // r1 = r1 - r6 (now - deadline)
+  0x01, 0xe0, 0x0b, 0xb0,             // ifs (r1 < 0) goto suppress (+22 -> 0x32)
+  0x0a, 0x34,                         // if (r2 != 0) goto suppress (+20 -> 0x32, release latch)
   0x01, 0x70,                         // r1 = 0
-  0x19, 0x4a,                         // [r5 + 4] = r1 (lockout expired, clear lockout)
-  // check_trigger (0x2E):
-  0x32, 0xe0, 0x0e, 0x10,             // if (r2 != 3) goto body (+28 -> 0x4E)
-  0x03, 0xfb, 0xdc, 0x2a,             // r3 = 0x2adc
-  0x01, 0x46,                         // r1 = [r3 + 0]
-  0x11, 0xfc, 0xc4, 0x09,             // r1 = r1 + 2500 (set 2500ms lockout)
-  0x19, 0x4a,                         // [r5 + 4] = r1
-  0x11, 0x70,                         // r1 = 1
-  0x29, 0x4a,                         // [r5 + 8] = r1 (active = 1)
-  0x40, 0x70,                         // r0 = 4 (Virtual chord key: Consumer Power)
-  0x04, 0x18,                         // goto body (+8 -> 0x4E)
-  // check_active (0x46):
-  0x02, 0x34,                         // if (r2 != 0) goto suppress (+4 -> 0x4C)
-  0x01, 0x70,                         // r1 = 0
-  0x29, 0x4a,                         // [r5 + 8] = r1 (both released, active = 0)
-  // suppress (0x4C):
-  0x00, 0x70,                         // r0 = 0 (suppress all keys)
-  // body (0x4E):
+  0x09, 0x4a,                         // [r5 + 0] = r1 (expired & released: clear lockout)
+  // check_chord (0x22):
+  0x32, 0xe0, 0x07, 0x10,             // if (r2 != 3) goto body (+14 -> 0x34)
+  0x01, 0x46,                         // r1 = [r3 + 0] (now)
+  0x11, 0xfc, 0xc4, 0x09,             // r1 = r1 + 2500 (set 2500ms deadline)
+  0x09, 0x4a,                         // [r5 + 0] = r1 (store deadline)
+  0x40, 0x70,                         // r0 = 4 (Virtual Key 2: Consumer Power)
+  0x01, 0x18,                         // goto body (+2 -> 0x34)
+  // suppress (0x32):
+  0x00, 0x70,                         // r0 = 0 (suppress input)
+  // body (0x34):
   0x0b, 0x08,                         // r11 = r0
   0x01, 0x70,                         // r1 = 0
   0xc3, 0xff, 0x20, 0xc8, 0xe0, 0x01, // r3 = 0x1E0C820
   0x93, 0x00,                         // goto r3
 ]);
 
-if (CHORD_LOCKOUT.length !== 90) throw new Error('CHORD_LOCKOUT length error');
+if (CHORD_LOCKOUT_64.length !== 64) throw new Error('CHORD_LOCKOUT_64 length error');
 
 const patches = defaultPatches().filter(
   ([n]) => n !== 'T1 Left BrightDown' &&
@@ -116,9 +115,9 @@ patches.push(['KB descriptor pointer 0x1E23450', 0xabc2, Buffer.from([0xc1, 0xff
 patches.push(['Consumer usage -> agg+38', 0xc7c6, Buffer.from([0x38, 0x59])]);
 patches.push(['Composite descriptor @0x23330', 0x23330, COMPOSITE_KB]);
 
-// v25 Chord Lockout Routine @0x2E100 (VMA 0x1E2E220) and entry redirect at 0xC6F8
-patches.push(['Chord lockout routine @0x2E100', 0x2e100, CHORD_LOCKOUT]);
-patches.push(['Aggregate builder -> chord lockout at 0x1E2E220', 0xc6f8, Buffer.from([0xc2, 0xff, 0x20, 0xe2, 0x2e, 0x01, 0x92, 0x00])]);
+// v25 Chord Lockout Routine @0x2260A (VMA 0x1E2272A, within .text unused kb descriptor slot)
+patches.push(['Chord lockout routine @0x2260A', 0x2260a, CHORD_LOCKOUT_64]);
+patches.push(['Aggregate builder -> chord lockout at 0x1E2272A', 0xc6f8, Buffer.from([0xc2, 0xff, 0x2a, 0x27, 0xe2, 0x01, 0x92, 0x00])]);
 
 // --- v24 Fast BLE Reconnection Optimizations ---
 // 1. Fast Advertising Interval: 800 (500ms) -> 32 (20ms)
@@ -134,4 +133,4 @@ const r = build(
   outPath,
   { patches }
 );
-console.log(JSON.stringify({ outPath, descriptorLength: COMPOSITE_KB.length, chordLockoutLength: CHORD_LOCKOUT.length, result: r }, null, 2));
+console.log(JSON.stringify({ outPath, descriptorLength: COMPOSITE_KB.length, chordLockoutLength: CHORD_LOCKOUT_64.length, result: r }, null, 2));

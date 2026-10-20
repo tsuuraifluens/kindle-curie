@@ -31,7 +31,7 @@ All modified binary releases are archived in [`release/03_IINE_Gamepad_Mod/firmw
 
 | Firmware | Recommended | Description & Hardware Verification | SHA-256 Checksum |
 | :--- | :---: | :--- | :--- |
-| **`IINE_Kindle_Click_v25_SleepLockout.ufw`** | ★★★★★<br>**(★Current Recommended)** | **Anti-Ghosting Sleep Lockout**: Builds upon v24 instant reconnect with a 2.5-second hardware timer cooldown shield and release latch. **Eliminates accidental page turns and wake-ups caused by asynchronous finger lift on A+B chord sleep!** | `f67cd51ecb0980587f22e14fd0966762576baee0e5af2e7b1dd79fe31b0e5f53` |
+| **`IINE_Kindle_Click_v25_SleepLockout.ufw`** | ★★★★★<br>**(★Current Recommended)** | **Anti-Ghosting Sleep Lockout**: Builds upon v24 instant reconnect with a 2.5-second hardware timer cooldown shield and release latch. **Eliminates accidental page turns and wake-ups caused by asynchronous finger lift on A+B chord sleep!** | `c17d1026179b96eb18e63a96f7f396a9bc22d64e4e91281971b31e3abcab9acf` |
 | **`IINE_Kindle_Click_v24_FastConnect.ufw`** | ★★★★★<br>*(Fast Reconnect)* | **Instant Connection Optimization**: Based on v23, tunes BLE advertising interval to **20ms** maximum density and bypasses ineffective directed advertising directly to `ADV_IND`. **Eliminates ~1 min boot latency, connecting in 1~2 seconds!** Full retention of A+B chord sleep & custom keymaps. | `5e7448ef3afb53671ff4e2a56743659fed9a916ff5f937e2fbe0f235690f2072` |
 | **`IINE_Kindle_Click_v23_ABchord.ufw`** | ★★★★☆<br>*(Chord Power Edition)* | Based on v22s, adds **A+B simultaneous chord press to put Kindle to sleep** (injects Consumer Power `0x0030`). | `f4b18cd49cf547cadbe465f2c0f1937495761ff72a4d6f84e2e595ce280a6879` |
 | **`IINE_Kindle_Click_v22s_keymap.ufw`** | ★★★★☆<br>*(Stable Baseline)* | **Ultimate One-Hand Layout**: Button A = Prev, Button B = Next, D-Pad Up/Down = Next/Prev, D-Pad Left/Right = Brightness Down/Up. Rock-solid stability; 100% verified on real hardware. | `2e517183d309bb2754dd30c6b056f0f6fc05a83335aadb2d82ae88c5e7ddb5fc` |
@@ -249,7 +249,7 @@ kind-curie/
 
 | Release Artifact | Path | SHA-256 Checksum |
 | :--- | :--- | :--- |
-| **IINE Kindle Mod v25 (Sleep Lockout)** | `release/03_IINE_Gamepad_Mod/firmware/IINE_Kindle_Click_v25_SleepLockout.ufw` | `f67cd51ecb0980587f22e14fd0966762576baee0e5af2e7b1dd79fe31b0e5f53` |
+| **IINE Kindle Mod v25 (Sleep Lockout)** | `release/03_IINE_Gamepad_Mod/firmware/IINE_Kindle_Click_v25_SleepLockout.ufw` | `c17d1026179b96eb18e63a96f7f396a9bc22d64e4e91281971b31e3abcab9acf` |
 | **IINE Kindle Mod v24 (Fast Reconnect)** | `release/03_IINE_Gamepad_Mod/firmware/IINE_Kindle_Click_v24_FastConnect.ufw` | `5e7448ef3afb53671ff4e2a56743659fed9a916ff5f937e2fbe0f235690f2072` |
 | **IINE Kindle Mod v23** | `release/03_IINE_Gamepad_Mod/firmware/IINE_Kindle_Click_v23_ABchord.ufw` | `f4b18cd49cf547cadbe465f2c0f1937495761ff72a4d6f84e2e595ce280a6879` |
 | **IINE Kindle Mod v22s** | `release/03_IINE_Gamepad_Mod/firmware/IINE_Kindle_Click_v22s_keymap.ufw` | `2e517183d309bb2754dd30c6b056f0f6fc05a83335aadb2d82ae88c5e7ddb5fc` |
