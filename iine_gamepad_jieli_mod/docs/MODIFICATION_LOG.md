@@ -230,6 +230,31 @@ SHA-256: `5E7448EF3AFB53671FF4E2A56743659FED9A916FF5F937E2FBE0F235690F2072`
 产物: `outputs/IINE_Kindle_Click_v25_SleepLockout.ufw` / `release/03_IINE_Gamepad_Mod/firmware/IINE_Kindle_Click_v25_SleepLockout.ufw`
 SHA-256: `C17D1026179B96EB18E63A96F7F396A9BC22D64E4E91281971B31E3ABCAB9ACF`
 
+## 2026-10-20: v25 终极修复版 (A/B键失效根因剖析与零RAM开销按键状态锁存架构)
+
+故障反馈:
+> **“A，B键全部失效，包括单独按和组合按……”**
+
+根因剖析 (Root Cause):
+- 在上一尝试版本中，例程试图利用 `0x2ADC` 硬件定时器并将冷却截止时间存放在 RAM `0x2B94`。
+- 深入逆向 JieLi AC6321A RTOS 内核：`0x29B0` 是系统 Task Control Block (TCB) 的全局基址。
+- 调度器代码 `1e2ecda: [r0 + 484] = r3`（`0x29B0 + 484 = 0x2B94`）表明，**`0x2B94` 是 RTOS 正在运行任务的 `current_task_tcb` 堆栈/TCB 指针**！
+- 该指针恒为非零任务指针（通常为 `0x4xxx`）。因此 `r1 = now - [0x2B94]` 计算结果永远严重为负。
+- 条件 `ifs (r1 < 0) goto suppress` 在每一次按键扫描中都被无条件命中，导致 `r0 = 0` 被恒定返回，A、B 键完全失效！
+
+终极修复架构:
+- 严格实行 **零 RAM 写入 (Zero RAM-Write Architecture)**。
+- 深入挖掘原厂固件状态机制：原厂固件在 `0x1E0E896` 将上一轮有效按键保存在 `[r14 + 400]`（`0x2B40`）。
+- 全新编写 **38 字节 `CHORD_LATCH` 汇编例程**安置在 `0x2260A`：
+  - A+B 同时按下时：输出虚拟按键 2（Power，`r0 = 4`），原厂将其写入 `[0x2B40] = 4`。
+  - 异步抬手时（如 A 先松开，B 仍被按住）：读取 `[0x2B40]`，因等于 4 且按键未完全松开，持续锁存输出 `r0 = 4`。原厂比对 `current == prev` 发现状态未变，绝不发送 PageDown 或 PageUp！
+  - 双键完全释放后：放行 `r0 = 0`，清空锁存。
+  - 单按 A、B 或方向键：因 `[0x2B40] != 4`，全部 0ms 零延迟直接透传。
+- 零 RAM 写入、零 RTOS 调度器冲突、零定时器依赖。
+
+产物: `outputs/IINE_Kindle_Click_v25_SleepLockout.ufw` / `release/03_IINE_Gamepad_Mod/firmware/IINE_Kindle_Click_v25_SleepLockout.ufw`
+SHA-256: `56D4DE1DBF5B98222310CDEDFCBEEC85EE7B2E1D97F1AB05A9DB9BC071F1DF23`
+
 ---
 
 ## 2026-10-20: 固件安全审计体系重大升级 (Security Audit Gates)

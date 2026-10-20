@@ -50,38 +50,34 @@ const COMPOSITE_KB = Buffer.from([
 
 if (COMPOSITE_KB.length !== 87) throw new Error('descriptor length');
 
-// Chord lockout state machine routine at VMA 0x1E2272A (app.bin 0x2260A, 64 bytes)
-const CHORD_LOCKOUT_64 = Buffer.from([
+// Chord latch routine at VMA 0x1E2272A (app.bin 0x2260A, 38 bytes)
+// Eliminates asynchronous finger lift-off ghosting without any RAM writes or OS timer dependencies:
+// - Uses the firmware's native previous key state variable [0x2B40] (maintained by the OS at r14 + 400).
+// - When A+B is pressed (r0 & 3 == 3): outputs Virtual Key 2 (Power, r0 = 4). [0x2B40] becomes 4.
+// - When fingers lift off asynchronously (e.g. A lifts, B still touching):
+//   Because [0x2B40] == 4 and (r0 & 3) != 0, it holds r0 = 4!
+//   Firmware sees current key == prev key (4 == 4), so NO PageDown or PageUp is ever emitted!
+// - When BOTH keys reach 0: drops r0 = 0, sending clean release and resetting [0x2B40] = 0.
+// - Single A / single B presses have [0x2B40] != 4, so they pass through with 0ms latency.
+const CHORD_LATCH = Buffer.from([
   0x7d, 0x01,                         // [--sp] = {rets, r13-r4}
   0x14, 0x08,                         // r4 = r1 (save output buffer pointer)
   0x22, 0xfd, 0x03, 0x09,             // r2 = r0 & 3 (isolate A and B keys)
-  0x05, 0xfb, 0x94, 0x2b,             // r5 = 0x2B94 (RAM BSS lockout deadline)
-  0x03, 0xfb, 0xdc, 0x2a,             // r3 = 0x2ADC (hardware millisecond timer)
-  0x06, 0x4a,                         // r6 = [r5 + 0] (read lockout deadline)
-  0x07, 0x2c,                         // if (r6 == 0) goto check_chord (+14 -> 0x22)
-  0x01, 0x46,                         // r1 = [r3 + 0] (now)
-  0xa1, 0xb3,                         // r1 = r1 - r6 (now - deadline)
-  0x01, 0xe0, 0x0b, 0xb0,             // ifs (r1 < 0) goto suppress (+22 -> 0x32)
-  0x0a, 0x34,                         // if (r2 != 0) goto suppress (+20 -> 0x32, release latch)
-  0x01, 0x70,                         // r1 = 0
-  0x09, 0x4a,                         // [r5 + 0] = r1 (expired & released: clear lockout)
-  // check_chord (0x22):
-  0x32, 0xe0, 0x07, 0x10,             // if (r2 != 3) goto body (+14 -> 0x34)
-  0x01, 0x46,                         // r1 = [r3 + 0] (now)
-  0x11, 0xfc, 0xc4, 0x09,             // r1 = r1 + 2500 (set 2500ms deadline)
-  0x09, 0x4a,                         // [r5 + 0] = r1 (store deadline)
+  0x32, 0xe0, 0x06, 0x00,             // if (r2 == 3) goto set_chord (+12 -> 0x18)
+  0x03, 0xfb, 0x40, 0x2b,             // r3 = 0x2B40 (native firmware prev_key variable)
+  0x03, 0x46,                         // r3 = [r3 + 0]
+  0x43, 0xe0, 0x02, 0x10,             // if (r3 != 4) goto body (+4 -> 0x1A)
+  0x01, 0x24,                         // if (r2 == 0) goto body (+2 -> 0x1A)
+  // set_chord (0x18):
   0x40, 0x70,                         // r0 = 4 (Virtual Key 2: Consumer Power)
-  0x01, 0x18,                         // goto body (+2 -> 0x34)
-  // suppress (0x32):
-  0x00, 0x70,                         // r0 = 0 (suppress input)
-  // body (0x34):
+  // body (0x1A):
   0x0b, 0x08,                         // r11 = r0
   0x01, 0x70,                         // r1 = 0
   0xc3, 0xff, 0x20, 0xc8, 0xe0, 0x01, // r3 = 0x1E0C820
   0x93, 0x00,                         // goto r3
 ]);
 
-if (CHORD_LOCKOUT_64.length !== 64) throw new Error('CHORD_LOCKOUT_64 length error');
+if (CHORD_LATCH.length !== 38) throw new Error('CHORD_LATCH length error');
 
 const patches = defaultPatches().filter(
   ([n]) => n !== 'T1 Left BrightDown' &&
@@ -115,8 +111,8 @@ patches.push(['KB descriptor pointer 0x1E23450', 0xabc2, Buffer.from([0xc1, 0xff
 patches.push(['Consumer usage -> agg+38', 0xc7c6, Buffer.from([0x38, 0x59])]);
 patches.push(['Composite descriptor @0x23330', 0x23330, COMPOSITE_KB]);
 
-// v25 Chord Lockout Routine @0x2260A (VMA 0x1E2272A, within .text unused kb descriptor slot)
-patches.push(['Chord lockout routine @0x2260A', 0x2260a, CHORD_LOCKOUT_64]);
+// v25 Chord Latch Routine @0x2260A (VMA 0x1E2272A, within .text unused kb descriptor slot)
+patches.push(['Chord lockout routine @0x2260A', 0x2260a, CHORD_LATCH]);
 patches.push(['Aggregate builder -> chord lockout at 0x1E2272A', 0xc6f8, Buffer.from([0xc2, 0xff, 0x2a, 0x27, 0xe2, 0x01, 0x92, 0x00])]);
 
 // --- v24 Fast BLE Reconnection Optimizations ---
@@ -133,4 +129,4 @@ const r = build(
   outPath,
   { patches }
 );
-console.log(JSON.stringify({ outPath, descriptorLength: COMPOSITE_KB.length, chordLockoutLength: CHORD_LOCKOUT_64.length, result: r }, null, 2));
+console.log(JSON.stringify({ outPath, descriptorLength: COMPOSITE_KB.length, chordLatchLength: CHORD_LATCH.length, result: r }, null, 2));
